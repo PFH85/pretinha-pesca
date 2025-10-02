@@ -28,6 +28,7 @@ export function Nav() {
     { href: '/investimentos', label: 'Investimentos' },
     { href: '/calculadora', label: 'Calculadora de Peixes' },
     { href: '/analises', label: 'Análises' },
+    { href: '/perfil', label: 'Perfil' },
     ...(isMaster ? [
       { href: '/admin', label: 'Admin' }
     ] : []),
