@@ -1,44 +1,10 @@
-'use client';
-import { useEffect, useState } from 'react';
 import { Nav } from '@/components/Nav';
-import { getSupabaseClient } from '@/lib/supabaseClient';
+import { AuthGuard } from '@/components/AuthGuard';
 
 export default function HomePage() {
-  const supabase = getSupabaseClient();
-  const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setAuthenticated(!!session);
-      setLoading(false);
-    })();
-  }, [supabase]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4">🎣</div>
-          <p>Carregando Pretinha Pesca...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!authenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4">🔒</div>
-          <p>Redirecionando para login...</p>
-        </div>
-      </div>
-    );
-  }
   return (
-    <div>
+    <AuthGuard>
+      <div>
       <Nav />
       <main className="max-w-5xl mx-auto p-4">
         <div className="text-center space-y-6">
@@ -93,8 +59,9 @@ export default function HomePage() {
               Use o menu de navegação acima para acessar as funcionalidades do sistema.
             </p>
           </div>
-        </div>
-      </main>
-    </div>
-  );
-}
+             </div>
+           </main>
+         </div>
+      </AuthGuard>
+    );
+  }
