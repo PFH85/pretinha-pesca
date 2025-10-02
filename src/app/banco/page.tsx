@@ -42,7 +42,7 @@ export default function BancoPage() {
     setDespesas(d.data || []);
     setAjustes(a.data || []);
     setLoading(false);
-  }, [supabase, de, ate]);
+  }, [supabase]);
 
   useEffect(() => { carregar(); }, [carregar]);
 

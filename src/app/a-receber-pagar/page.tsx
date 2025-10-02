@@ -37,12 +37,12 @@ export default function AReceberPagarPage() {
 
   // Filtrar por data
   const entradasFiltradas = useMemo(() => 
-    entradas.filter((x) => (!de || x.data >= de) && (!ate || x.data <= ate)), 
+    entradas.filter((x) => (!de || (x.data as string) >= de) && (!ate || (x.data as string) <= ate)), 
     [entradas, de, ate]
   );
   
   const despesasFiltradas = useMemo(() => 
-    despesas.filter((x) => (!de || x.data >= de) && (!ate || x.data <= ate)), 
+    despesas.filter((x) => (!de || (x.data as string) >= de) && (!ate || (x.data as string) <= ate)), 
     [despesas, de, ate]
   );
 
