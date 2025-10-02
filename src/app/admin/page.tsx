@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Nav } from '@/components/Nav';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 
@@ -26,7 +26,7 @@ export default function AdminPage() {
     })();
   }, [supabase]);
 
-  async function carregar() {
+  const carregar = useCallback(async () => {
     setLoading(true);
     setMsg(null);
     const e = await supabase.from('entradas').select('*').order('data', { ascending: false });
@@ -36,7 +36,7 @@ export default function AdminPage() {
     setDespesas(d.data || []);
     setAjustes(a.data || []);
     setLoading(false);
-  }
+  }, [supabase]);
 
   useEffect(() => { if (authorized) carregar(); }, [authorized, carregar]);
 

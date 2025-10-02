@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Nav } from '@/components/Nav';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 
@@ -11,7 +11,7 @@ export default function AReceberPagarPage() {
   const [de, setDe] = useState('');
   const [ate, setAte] = useState('');
 
-  async function carregar() {
+  const carregar = useCallback(async () => {
     setLoading(true);
 
     // Buscar entradas NÃO pagas
@@ -26,12 +26,12 @@ export default function AReceberPagarPage() {
       .from('despesas')
       .select('*')
       .eq('pago', false)
-      .order('data_pagamento', { ascending: true, nullsLast: true });
+      .order('data_pagamento', { ascending: true, nullsFirst: false });
 
     setEntradas(e.data || []);
     setDespesas(d.data || []);
     setLoading(false);
-  }
+  }, [supabase]);
 
   useEffect(() => { carregar(); }, [carregar]);
 

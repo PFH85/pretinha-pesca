@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Nav } from '@/components/Nav';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 
@@ -13,7 +13,7 @@ export default function BancoPage() {
   const [despesas, setDespesas] = useState<Record<string, unknown>[]>([]);
   const [ajustes, setAjustes] = useState<Record<string, unknown>[]>([]);
 
-  async function carregar() {
+  const carregar = useCallback(async () => {
     setLoading(true);
     // Removida a função filtros não utilizada
 
@@ -42,7 +42,7 @@ export default function BancoPage() {
     setDespesas(d.data || []);
     setAjustes(a.data || []);
     setLoading(false);
-  }
+  }, [supabase, de, ate]);
 
   useEffect(() => { carregar(); }, [carregar]);
 

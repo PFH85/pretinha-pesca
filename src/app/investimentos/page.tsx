@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Nav } from '@/components/Nav';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 
@@ -23,7 +23,7 @@ export default function InvestimentosPage() {
     carregarInvestimentos();
   }, [carregarInvestimentos]);
 
-  async function carregarInvestimentos() {
+  const carregarInvestimentos = useCallback(async () => {
     setLoading(true);
     
     // Buscar ajustes que são investimentos
@@ -60,7 +60,7 @@ export default function InvestimentosPage() {
 
     setTotais(totaisPorCliente);
     setLoading(false);
-  }
+  }, [supabase]);
 
   const valorTotal = investimentos.reduce((sum, inv) => sum + (inv.valor || 0), 0);
 
