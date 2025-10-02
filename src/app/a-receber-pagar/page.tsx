@@ -6,8 +6,8 @@ import { getSupabaseClient } from '@/lib/supabaseClient';
 export default function AReceberPagarPage() {
   const supabase = getSupabaseClient();
   const [loading, setLoading] = useState(true);
-  const [entradas, setEntradas] = useState<any[]>([]);
-  const [despesas, setDespesas] = useState<any[]>([]);
+  const [entradas, setEntradas] = useState<Record<string, unknown>[]>([]);
+  const [despesas, setDespesas] = useState<Record<string, unknown>[]>([]);
   const [de, setDe] = useState('');
   const [ate, setAte] = useState('');
 
@@ -33,7 +33,7 @@ export default function AReceberPagarPage() {
     setLoading(false);
   }
 
-  useEffect(() => { carregar(); }, []);
+  useEffect(() => { carregar(); }, [carregar]);
 
   // Filtrar por data
   const entradasFiltradas = useMemo(() => 

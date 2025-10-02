@@ -5,20 +5,17 @@ import { getSupabaseClient } from '@/lib/supabaseClient';
 
 export default function BancoPage() {
   const supabase = getSupabaseClient();
-  const [ajTipo, setAjTipo] = useState<'entrada' | 'saida'>('entrada');
-  const [ajValor, setAjValor] = useState<number | ''>('');
-  const [ajMotivo, setAjMotivo] = useState('');
-  const [msg, setMsg] = useState<string | null>(null);
+  // Removidas as variáveis não utilizadas
   const [de, setDe] = useState('');
   const [ate, setAte] = useState('');
   const [loading, setLoading] = useState(false);
-  const [entradas, setEntradas] = useState<any[]>([]);
-  const [despesas, setDespesas] = useState<any[]>([]);
-  const [ajustes, setAjustes] = useState<any[]>([]);
+  const [entradas, setEntradas] = useState<Record<string, unknown>[]>([]);
+  const [despesas, setDespesas] = useState<Record<string, unknown>[]>([]);
+  const [ajustes, setAjustes] = useState<Record<string, unknown>[]>([]);
 
   async function carregar() {
     setLoading(true);
-    const filtros = (col: string) => ({ gte: de || undefined, lte: ate || undefined, col });
+    // Removida a função filtros não utilizada
 
     // Apenas entradas pagas pela empresa (EM) - não PH/DICO (que são investimentos)
     const e = await supabase
@@ -47,7 +44,7 @@ export default function BancoPage() {
     setLoading(false);
   }
 
-  useEffect(() => { carregar(); }, []);
+  useEffect(() => { carregar(); }, [carregar]);
 
   const entradasFiltradas = useMemo(() => entradas.filter((x) => (!de || x.data >= de) && (!ate || x.data <= ate)), [entradas, de, ate]);
   const despesasFiltradas = useMemo(() => despesas.filter((x) => (!de || x.data >= de) && (!ate || x.data <= ate)), [despesas, de, ate]);
@@ -97,7 +94,7 @@ export default function BancoPage() {
 
   function exportEntradasCSV() {
     const headers = ['id', 'data', 'valor', 'previsao', 'pago'];
-    const rows = entradasFiltradas.map((e: any) => [
+    const rows = entradasFiltradas.map((e: Record<string, unknown>) => [
       String(e.id || ''),
       String(e.data || ''),
       String(e.valor ?? ''),
@@ -109,7 +106,7 @@ export default function BancoPage() {
 
   function exportDespesasCSV() {
     const headers = ['id', 'data', 'item', 'tipo', 'valor', 'pago'];
-    const rows = despesasFiltradas.map((d: any) => [
+    const rows = despesasFiltradas.map((d: Record<string, unknown>) => [
       String(d.id || ''),
       String(d.data || ''),
       String(d.item || ''),
@@ -122,7 +119,7 @@ export default function BancoPage() {
 
   function exportAjustesCSV() {
     const headers = ['id', 'created_at', 'tipo', 'valor', 'motivo'];
-    const rows = ajustesFiltrados.map((a: any) => [
+    const rows = ajustesFiltrados.map((a: Record<string, unknown>) => [
       String(a.id || ''),
       String(a.created_at || ''),
       String(a.tipo || ''),
@@ -135,13 +132,13 @@ export default function BancoPage() {
   function exportConsolidadoCSV() {
     const headers = ['origem', 'id', 'data', 'tipo', 'item', 'valor', 'observacao'];
     const rows: string[][] = [];
-    entradasFiltradas.forEach((e: any) => {
+    entradasFiltradas.forEach((e: Record<string, unknown>) => {
       rows.push(['entrada', String(e.id || ''), String(e.data || ''), 'pago', '', String(e.valor ?? ''), `previsao:${e.previsao || ''}`]);
     });
-    despesasFiltradas.forEach((d: any) => {
+    despesasFiltradas.forEach((d: Record<string, unknown>) => {
       rows.push(['despesa', String(d.id || ''), String(d.data || ''), 'pago', String(d.item || ''), String(d.valor ?? ''), String(d.tipo || '')]);
     });
-    ajustesFiltrados.forEach((a: any) => {
+    ajustesFiltrados.forEach((a: Record<string, unknown>) => {
       rows.push(['ajuste', String(a.id || ''), String(a.created_at || ''), String(a.tipo || ''), '', String(a.valor ?? ''), String(a.motivo || '')]);
     });
     downloadCSV('consolidado.csv', headers, rows);
@@ -194,7 +191,7 @@ export default function BancoPage() {
             <table className="w-full border text-sm">
               <thead><tr className="bg-gray-50"><th className="border px-2 py-1 text-left">Data</th><th className="border px-2 py-1 text-left">Descrição</th><th className="border px-2 py-1 text-right">Valor</th></tr></thead>
               <tbody>
-                {entradasNovas.map((e: any) => (
+                {entradasNovas.map((e: Record<string, unknown>) => (
                   <tr key={e.id}>
                     <td className="border px-2 py-1">{e.data}</td>
                     <td className="border px-2 py-1">{e.cliente_nome || 'Entrada sem descrição'}</td>
@@ -210,7 +207,7 @@ export default function BancoPage() {
             <table className="w-full border text-sm">
               <thead><tr className="bg-gray-50"><th className="border px-2 py-1 text-left">Data</th><th className="border px-2 py-1 text-left">Descrição</th><th className="border px-2 py-1 text-right">Valor</th></tr></thead>
               <tbody>
-                {despesasNovas.map((d: any) => (
+                {despesasNovas.map((d: Record<string, unknown>) => (
                   <tr key={d.id}>
                     <td className="border px-2 py-1">{d.data}</td>
                     <td className="border px-2 py-1">

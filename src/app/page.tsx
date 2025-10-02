@@ -47,7 +47,7 @@ export default function HomePage() {
             
             <div className="mt-6 text-center">
               <p className="text-blue-700 font-medium">
-                "Que cada dia seja uma boa pescaria e cada decisão nos leve a águas mais prósperas!" 
+                &quot;Que cada dia seja uma boa pescaria e cada decisão nos leve a águas mais prósperas!&quot; 
               </p>
             </div>
           </div>

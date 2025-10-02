@@ -10,9 +10,9 @@ export default function AdminPage() {
   const [ate, setAte] = useState('');
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [entradas, setEntradas] = useState<any[]>([]);
-  const [despesas, setDespesas] = useState<any[]>([]);
-  const [ajustes, setAjustes] = useState<any[]>([]);
+  const [entradas, setEntradas] = useState<Record<string, unknown>[]>([]);
+  const [despesas, setDespesas] = useState<Record<string, unknown>[]>([]);
+  const [ajustes, setAjustes] = useState<Record<string, unknown>[]>([]);
   const [mostrarTodasEntradas, setMostrarTodasEntradas] = useState(false);
   const [mostrarTodasDespesas, setMostrarTodasDespesas] = useState(false);
 
@@ -38,7 +38,7 @@ export default function AdminPage() {
     setLoading(false);
   }
 
-  useEffect(() => { if (authorized) carregar(); }, [authorized]);
+  useEffect(() => { if (authorized) carregar(); }, [authorized, carregar]);
 
   // Filtrar e manter ordenação por data mais recente
   const entradasFiltradas = useMemo(() => {
@@ -71,7 +71,7 @@ export default function AdminPage() {
     return mostrarTodasDespesas ? despesasFiltradas : despesasFiltradas.slice(0, 10);
   }, [despesasFiltradas, mostrarTodasDespesas]);
 
-  async function salvarLinha(tabela: 'entradas'|'despesas'|'ajustes_banco', id: string, payload: any) {
+  async function salvarLinha(tabela: 'entradas'|'despesas'|'ajustes_banco', id: string, payload: Record<string, unknown>) {
     setMsg(null);
     const { error } = await supabase.from(tabela).update(payload).eq('id', id);
     if (error) { setMsg(`Erro ao salvar: ${error.message}`); return; }
@@ -168,7 +168,7 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {entradasParaMostrar.map((e: any) => (
+                {entradasParaMostrar.map((e: Record<string, unknown>) => (
                   <tr key={e.id}>
                     <td className="border px-2 py-1"><input type="date" className="border rounded px-2 py-1" value={e.data || ''} onChange={(ev) => e.data = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={e.cliente_nome || ''} onChange={(ev) => e.cliente_nome = ev.target.value} /></td>
@@ -217,7 +217,7 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {despesasParaMostrar.map((d: any) => (
+                {despesasParaMostrar.map((d: Record<string, unknown>) => (
                   <tr key={d.id}>
                     <td className="border px-2 py-1"><input type="date" className="border rounded px-2 py-1" value={d.data || ''} onChange={(ev) => d.data = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={d.item || ''} onChange={(ev) => d.item = ev.target.value} /></td>
@@ -249,7 +249,7 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {ajustesFiltrados.map((a: any) => (
+                {ajustesFiltrados.map((a: Record<string, unknown>) => (
                   <tr key={a.id}>
                     <td className="border px-2 py-1">{a.created_at?.slice(0,10)}</td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={a.tipo || ''} onChange={(ev) => a.tipo = ev.target.value} /></td>

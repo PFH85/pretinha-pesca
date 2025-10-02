@@ -21,7 +21,7 @@ export default function InvestimentosPage() {
 
   useEffect(() => {
     carregarInvestimentos();
-  }, []);
+  }, [carregarInvestimentos]);
 
   async function carregarInvestimentos() {
     setLoading(true);
