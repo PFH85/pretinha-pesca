@@ -46,10 +46,10 @@ export default function BancoPage() {
 
   useEffect(() => { carregar(); }, [carregar]);
 
-  const entradasFiltradas = useMemo(() => entradas.filter((x) => (!de || x.data >= de) && (!ate || x.data <= ate)), [entradas, de, ate]);
-  const despesasFiltradas = useMemo(() => despesas.filter((x) => (!de || x.data >= de) && (!ate || x.data <= ate)), [despesas, de, ate]);
+  const entradasFiltradas = useMemo(() => entradas.filter((x) => (!de || (x.data as string) >= de) && (!ate || (x.data as string) <= ate)), [entradas, de, ate]);
+  const despesasFiltradas = useMemo(() => despesas.filter((x) => (!de || (x.data as string) >= de) && (!ate || (x.data as string) <= ate)), [despesas, de, ate]);
   const ajustesFiltrados = useMemo(() => ajustes.filter((x) => {
-    const d = x.created_at?.slice(0,10);
+    const d = (x.created_at as string)?.slice(0,10);
     return (!de || d >= de) && (!ate || d <= ate);
   }), [ajustes, de, ate]);
 
