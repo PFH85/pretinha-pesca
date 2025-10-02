@@ -12,6 +12,26 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  // Função para validar senha
+  function validarSenha(senha: string): string | null {
+    if (senha.length < 8) {
+      return 'A senha deve ter pelo menos 8 caracteres';
+    }
+    if (!/[A-Z]/.test(senha)) {
+      return 'A senha deve conter pelo menos 1 letra maiúscula';
+    }
+    if (!/[a-z]/.test(senha)) {
+      return 'A senha deve conter pelo menos 1 letra minúscula';
+    }
+    if (!/[0-9]/.test(senha)) {
+      return 'A senha deve conter pelo menos 1 número';
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(senha)) {
+      return 'A senha deve conter pelo menos 1 caractere especial (!@#$%^&*(),.?":{}|<>)';
+    }
+    return null; // Senha válida
+  }
+
   async function handleAuth(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -19,6 +39,14 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
+        // Validar senha apenas no cadastro
+        const erroSenha = validarSenha(password);
+        if (erroSenha) {
+          setMessage(`⚠️ ${erroSenha}`);
+          setLoading(false);
+          return;
+        }
+
         // Cadastro
         const { error } = await supabase.auth.signUp({
           email,
@@ -91,9 +119,21 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="••••••••"
-                minLength={6}
+                minLength={8}
                 required
               />
+              {isSignUp && (
+                <div className="mt-2 text-xs text-gray-600 space-y-1">
+                  <p className="font-medium">A senha deve conter:</p>
+                  <ul className="list-disc list-inside space-y-0.5">
+                    <li>Pelo menos 8 caracteres</li>
+                    <li>1 letra maiúscula (A-Z)</li>
+                    <li>1 letra minúscula (a-z)</li>
+                    <li>1 número (0-9)</li>
+                    <li>1 caractere especial (!@#$%^&*)</li>
+                  </ul>
+                </div>
+              )}
             </div>
 
             <button
