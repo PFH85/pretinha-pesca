@@ -192,7 +192,7 @@ export default function BancoPage() {
               <thead><tr className="bg-gray-50"><th className="border px-2 py-1 text-left">Data</th><th className="border px-2 py-1 text-left">Descrição</th><th className="border px-2 py-1 text-right">Valor</th></tr></thead>
               <tbody>
                 {entradasNovas.map((e: Record<string, unknown>) => (
-                  <tr key={e.id}>
+                  <tr key={e.id as string}>
                     <td className="border px-2 py-1">{e.data}</td>
                     <td className="border px-2 py-1">{e.cliente_nome || 'Entrada sem descrição'}</td>
                     <td className="border px-2 py-1 text-right">{Number(e.valor).toFixed(2)}</td>
@@ -208,7 +208,7 @@ export default function BancoPage() {
               <thead><tr className="bg-gray-50"><th className="border px-2 py-1 text-left">Data</th><th className="border px-2 py-1 text-left">Descrição</th><th className="border px-2 py-1 text-right">Valor</th></tr></thead>
               <tbody>
                 {despesasNovas.map((d: Record<string, unknown>) => (
-                  <tr key={d.id}>
+                  <tr key={d.id as string}>
                     <td className="border px-2 py-1">{d.data}</td>
                     <td className="border px-2 py-1">
                       {d.item}
