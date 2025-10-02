@@ -74,7 +74,7 @@ export default function LoginPage() {
           router.push('/');
         }
       }
-    } catch (error) {
+    } catch {
       setMessage('Erro inesperado. Tente novamente.');
     } finally {
       setLoading(false);
@@ -102,7 +102,7 @@ export default function LoginPage() {
         setShowForgotPassword(false);
         setForgotEmail('');
       }
-    } catch (error) {
+    } catch {
       setMessage('❌ Erro inesperado. Tente novamente.');
     } finally {
       setLoading(false);

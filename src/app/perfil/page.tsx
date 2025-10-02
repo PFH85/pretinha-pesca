@@ -93,7 +93,7 @@ export default function PerfilPage() {
         setNovaSenha('');
         setConfirmarSenha('');
       }
-    } catch (error) {
+    } catch {
       setMessage('❌ Erro inesperado. Tente novamente.');
     } finally {
       setLoading(false);
@@ -114,7 +114,7 @@ export default function PerfilPage() {
       } else {
         setMessage('✅ Email de redefinição enviado! Verifique sua caixa de entrada.');
       }
-    } catch (error) {
+    } catch {
       setMessage('❌ Erro inesperado. Tente novamente.');
     } finally {
       setLoading(false);
