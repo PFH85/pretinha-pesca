@@ -173,7 +173,7 @@ export default function AdminPage() {
                     <td className="border px-2 py-1"><input type="date" className="border rounded px-2 py-1" value={(e.data as string) || ''} onChange={(ev) => e.data = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={(e.cliente_nome as string) || ''} onChange={(ev) => e.cliente_nome = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={(e.contato as string) || ''} onChange={(ev) => e.contato = ev.target.value} /></td>
-                    <td className="border px-2 py-1"><input type="number" step="0.01" className="border rounded px-2 py-1 text-right" value={e.valor ?? ''} onChange={(ev) => e.valor = ev.target.value === '' ? null : Number(ev.target.value)} /></td>
+                    <td className="border px-2 py-1"><input type="number" step="0.01" className="border rounded px-2 py-1 text-right" value={(e.valor as number) ?? ''} onChange={(ev) => e.valor = ev.target.value === '' ? null : Number(ev.target.value)} /></td>
                     <td className="border px-2 py-1"><input type="date" className="border rounded px-2 py-1" value={(e.previsao as string) || ''} onChange={(ev) => e.previsao = ev.target.value} /></td>
                     <td className="border px-2 py-1 text-center"><input type="checkbox" checked={!!e.pago} onChange={(ev) => e.pago = ev.target.checked} /></td>
                     <td className="border px-2 py-1 space-x-2">
@@ -222,7 +222,7 @@ export default function AdminPage() {
                     <td className="border px-2 py-1"><input type="date" className="border rounded px-2 py-1" value={(d.data as string) || ''} onChange={(ev) => d.data = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={(d.item as string) || ''} onChange={(ev) => d.item = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={(d.tipo as string) || ''} onChange={(ev) => d.tipo = ev.target.value} /></td>
-                    <td className="border px-2 py-1"><input type="number" step="0.01" className="border rounded px-2 py-1 text-right" value={d.valor ?? ''} onChange={(ev) => d.valor = ev.target.value === '' ? null : Number(ev.target.value)} /></td>
+                    <td className="border px-2 py-1"><input type="number" step="0.01" className="border rounded px-2 py-1 text-right" value={(d.valor as number) ?? ''} onChange={(ev) => d.valor = ev.target.value === '' ? null : Number(ev.target.value)} /></td>
                     <td className="border px-2 py-1 text-center"><input type="checkbox" checked={!!d.pago} onChange={(ev) => d.pago = ev.target.checked} /></td>
                     <td className="border px-2 py-1 space-x-2">
                       <button className="border rounded px-2 py-1" onClick={() => salvarLinha('despesas', d.id as string, { data: d.data, item: d.item, tipo: d.tipo, valor: d.valor, pago: !!d.pago })}>Salvar</button>
@@ -253,7 +253,7 @@ export default function AdminPage() {
                   <tr key={a.id as string}>
                     <td className="border px-2 py-1">{(a.created_at as string)?.slice(0,10)}</td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={(a.tipo as string) || ''} onChange={(ev) => a.tipo = ev.target.value} /></td>
-                    <td className="border px-2 py-1"><input type="number" step="0.01" className="border rounded px-2 py-1 text-right" value={a.valor ?? ''} onChange={(ev) => a.valor = ev.target.value === '' ? null : Number(ev.target.value)} /></td>
+                    <td className="border px-2 py-1"><input type="number" step="0.01" className="border rounded px-2 py-1 text-right" value={(a.valor as number) ?? ''} onChange={(ev) => a.valor = ev.target.value === '' ? null : Number(ev.target.value)} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={(a.motivo as string) || ''} onChange={(ev) => a.motivo = ev.target.value} /></td>
                     <td className="border px-2 py-1 space-x-2">
                       <button className="border rounded px-2 py-1" onClick={() => salvarLinha('ajustes_banco', a.id as string, { tipo: a.tipo, valor: a.valor, motivo: a.motivo || null })}>Salvar</button>
