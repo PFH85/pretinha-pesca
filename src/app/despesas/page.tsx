@@ -83,7 +83,7 @@ export default function DespesasPage() {
         item,
         tipo,
         data,
-        valor: valor === '' ? 0 : Number(valor),
+        valor: typeof valor === 'string' && valor === '' ? 0 : Number(valor),
         pago,
         // pagador não existe na tabela despesas, apenas em entradas
         fonte_pagadora: fontePagadora || null,
@@ -103,7 +103,7 @@ export default function DespesasPage() {
         {
           user_id: userId,
           tipo: 'entrada',
-          valor: valor === '' ? 0 : Number(valor),
+          valor: typeof valor === 'string' && valor === '' ? 0 : Number(valor),
           motivo: `Despesa ${fontePagadoraUpper} - ${item} (automático)`,
         },
       ]);

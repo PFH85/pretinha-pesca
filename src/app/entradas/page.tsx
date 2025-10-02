@@ -66,7 +66,7 @@ export default function EntradasPage() {
     const { error } = await supabase.from('entradas').insert([
       {
         user_id: userId,
-        valor: valor === '' ? 0 : Number(valor),
+        valor: typeof valor === 'string' && valor === '' ? 0 : Number(valor),
         data: hoje,
         previsao: previsao || null,
         pago,
@@ -88,7 +88,7 @@ export default function EntradasPage() {
         {
           user_id: userId,
           tipo: 'entrada',
-          valor: valor === '' ? 0 : Number(valor),
+          valor: typeof valor === 'string' && valor === '' ? 0 : Number(valor),
           motivo: `Entrada ${clienteUpper} - ${cliente} (automático)`,
         },
       ]);
