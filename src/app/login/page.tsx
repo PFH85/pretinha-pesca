@@ -90,14 +90,14 @@ export default function LoginPage() {
     setMessage(null);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/perfil`,
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/login`,
       });
 
       if (error) {
         setMessage(`❌ Erro: ${error.message}`);
       } else {
-        setMessage('✅ Email de redefinição enviado! Verifique sua caixa de entrada.');
+        setMessage('✅ Email de redefinição enviado! Verifique sua caixa de entrada e spam.');
         setShowForgotPassword(false);
       }
     } catch (error) {
@@ -201,18 +201,37 @@ export default function LoginPage() {
 
           {/* Esqueci a senha */}
           {!isSignUp && showForgotPassword && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="font-medium text-gray-700 mb-2">Redefinir Senha</h3>
-              <p className="text-sm text-gray-600 mb-3">
-                Digite seu email e enviaremos instruções para redefinir sua senha.
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h3 className="font-medium text-blue-800 mb-2">🔑 Redefinir Senha</h3>
+              <p className="text-sm text-blue-700 mb-3">
+                Digite seu email abaixo e clique em &quot;Enviar Email&quot;.
               </p>
+              
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-blue-700 mb-1">
+                  Seu Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full border border-blue-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="digite@seuemail.com"
+                  required
+                />
+              </div>
+              
               <button
                 onClick={redefinirSenhaEmail}
                 disabled={loading || !email.trim()}
-                className="w-full bg-gray-600 text-white rounded-lg py-2 px-4 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 text-white rounded-lg py-2 px-4 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Enviando...' : 'Enviar Email de Redefinição'}
+                {loading ? 'Enviando...' : '📧 Enviar Email de Redefinição'}
               </button>
+              
+              <p className="text-xs text-blue-600 mt-2">
+                ⚠️ Verifique sua caixa de entrada e spam após enviar.
+              </p>
             </div>
           )}
 
