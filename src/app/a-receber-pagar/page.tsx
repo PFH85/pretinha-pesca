@@ -161,9 +161,9 @@ export default function AReceberPagarPage() {
                 </thead>
                 <tbody>
                   {entradasFiltradas.map((entrada, index) => (
-                    <tr key={entrada.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <tr key={entrada.id as string} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="border-b px-3 py-2">
-                        {new Date(entrada.data).toLocaleDateString('pt-BR')}
+                        {new Date(entrada.data as string).toLocaleDateString('pt-BR')}
                       </td>
                       <td className="border-b px-3 py-2">
                         {entrada.cliente_nome || 'Sem nome'}
@@ -172,11 +172,11 @@ export default function AReceberPagarPage() {
                         R$ {Number(entrada.valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="border-b px-3 py-2">
-                        {entrada.previsao ? new Date(entrada.previsao).toLocaleDateString('pt-BR') : '-'}
+                        {entrada.previsao ? new Date(entrada.previsao as string).toLocaleDateString('pt-BR') : '-'}
                       </td>
                       <td className="border-b px-3 py-2 text-center">
                         <button
-                          onClick={() => marcarComoPago('entrada', entrada.id)}
+                          onClick={() => marcarComoPago('entrada', entrada.id as string)}
                           className="bg-green-600 text-white rounded px-2 py-1 text-xs hover:bg-green-700"
                         >
                           Recebido
@@ -226,9 +226,9 @@ export default function AReceberPagarPage() {
                 </thead>
                 <tbody>
                   {despesasFiltradas.map((despesa, index) => (
-                    <tr key={despesa.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <tr key={despesa.id as string} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="border-b px-3 py-2">
-                        {new Date(despesa.data).toLocaleDateString('pt-BR')}
+                        {new Date(despesa.data as string).toLocaleDateString('pt-BR')}
                       </td>
                       <td className="border-b px-3 py-2">
                         {despesa.item}
@@ -237,14 +237,14 @@ export default function AReceberPagarPage() {
                         R$ {Number(despesa.valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="border-b px-3 py-2 text-xs">
-                        {despesa.data_pagamento ? new Date(despesa.data_pagamento).toLocaleDateString('pt-BR') : '-'}
+                        {despesa.data_pagamento ? new Date(despesa.data_pagamento as string).toLocaleDateString('pt-BR') : '-'}
                       </td>
                       <td className="border-b px-3 py-2 text-xs">
                         {despesa.fonte_pagadora || despesa.tipo || '-'}
                       </td>
                       <td className="border-b px-3 py-2 text-center">
                         <button
-                          onClick={() => marcarComoPago('despesa', despesa.id)}
+                          onClick={() => marcarComoPago('despesa', despesa.id as string)}
                           className="bg-red-600 text-white rounded px-2 py-1 text-xs hover:bg-red-700"
                         >
                           Pago
