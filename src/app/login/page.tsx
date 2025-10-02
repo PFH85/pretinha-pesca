@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
 
   // Função para validar senha
   function validarSenha(senha: string): string | null {
@@ -81,7 +82,7 @@ export default function LoginPage() {
   }
 
   async function redefinirSenhaEmail() {
-    if (!email.trim()) {
+    if (!forgotEmail.trim()) {
       setMessage('⚠️ Digite seu email para redefinir a senha.');
       return;
     }
@@ -90,7 +91,7 @@ export default function LoginPage() {
     setMessage(null);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), {
         redirectTo: `${window.location.origin}/login`,
       });
 
@@ -99,6 +100,7 @@ export default function LoginPage() {
       } else {
         setMessage('✅ Email de redefinição enviado! Verifique sua caixa de entrada e spam.');
         setShowForgotPassword(false);
+        setForgotEmail('');
       }
     } catch (error) {
       setMessage('❌ Erro inesperado. Tente novamente.');
@@ -180,6 +182,7 @@ export default function LoginPage() {
                 setIsSignUp(!isSignUp);
                 setMessage(null);
                 setShowForgotPassword(false);
+                setForgotEmail('');
               }}
               className="text-blue-600 hover:text-blue-800 text-sm block w-full"
             >
@@ -191,6 +194,7 @@ export default function LoginPage() {
                 onClick={() => {
                   setShowForgotPassword(!showForgotPassword);
                   setMessage(null);
+                  setForgotEmail('');
                 }}
                 className="text-gray-600 hover:text-gray-800 text-sm"
               >
@@ -209,12 +213,12 @@ export default function LoginPage() {
               
               <div className="mb-3">
                 <label className="block text-sm font-medium text-blue-700 mb-1">
-                  Seu Email
+                  Digite seu Email para Redefinição
                 </label>
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
                   className="w-full border border-blue-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="digite@seuemail.com"
                   required
@@ -223,7 +227,7 @@ export default function LoginPage() {
               
               <button
                 onClick={redefinirSenhaEmail}
-                disabled={loading || !email.trim()}
+                disabled={loading || !forgotEmail.trim()}
                 className="w-full bg-blue-600 text-white rounded-lg py-2 px-4 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Enviando...' : '📧 Enviar Email de Redefinição'}
