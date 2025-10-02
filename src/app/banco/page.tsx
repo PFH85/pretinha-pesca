@@ -193,8 +193,8 @@ export default function BancoPage() {
               <tbody>
                 {entradasNovas.map((e: Record<string, unknown>) => (
                   <tr key={e.id as string}>
-                    <td className="border px-2 py-1">{e.data}</td>
-                    <td className="border px-2 py-1">{e.cliente_nome || 'Entrada sem descrição'}</td>
+                    <td className="border px-2 py-1">{e.data as string}</td>
+                    <td className="border px-2 py-1">{(e.cliente_nome as string) || 'Entrada sem descrição'}</td>
                     <td className="border px-2 py-1 text-right">{Number(e.valor).toFixed(2)}</td>
                   </tr>
                 ))}
@@ -209,11 +209,11 @@ export default function BancoPage() {
               <tbody>
                 {despesasNovas.map((d: Record<string, unknown>) => (
                   <tr key={d.id as string}>
-                    <td className="border px-2 py-1">{d.data}</td>
+                    <td className="border px-2 py-1">{d.data as string}</td>
                     <td className="border px-2 py-1">
-                      {d.item}
-                      {d.fonte_pagadora && ` (${d.fonte_pagadora})`}
-                      {!d.fonte_pagadora && d.pagador && ` (${d.pagador})`}
+                      {d.item as string}
+                      {d.fonte_pagadora && ` (${d.fonte_pagadora as string})`}
+                      {!d.fonte_pagadora && d.pagador && ` (${d.pagador as string})`}
                     </td>
                     <td className="border px-2 py-1 text-right">{Number(d.valor).toFixed(2)}</td>
                   </tr>
