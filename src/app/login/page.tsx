@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   // Função para validar senha
   function validarSenha(senha: string): string | null {
@@ -74,6 +75,33 @@ export default function LoginPage() {
       }
     } catch (error) {
       setMessage('Erro inesperado. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function redefinirSenhaEmail() {
+    if (!email.trim()) {
+      setMessage('⚠️ Digite seu email para redefinir a senha.');
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/perfil`,
+      });
+
+      if (error) {
+        setMessage(`❌ Erro: ${error.message}`);
+      } else {
+        setMessage('✅ Email de redefinição enviado! Verifique sua caixa de entrada.');
+        setShowForgotPassword(false);
+      }
+    } catch (error) {
+      setMessage('❌ Erro inesperado. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -146,17 +174,47 @@ export default function LoginPage() {
           </form>
 
           {/* Toggle */}
-          <div className="text-center mt-4">
+          <div className="text-center mt-4 space-y-2">
             <button
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setMessage(null);
+                setShowForgotPassword(false);
               }}
-              className="text-blue-600 hover:text-blue-800 text-sm"
+              className="text-blue-600 hover:text-blue-800 text-sm block w-full"
             >
               {isSignUp ? 'Já tem conta? Fazer login' : 'Não tem conta? Criar uma'}
             </button>
+            
+            {!isSignUp && (
+              <button
+                onClick={() => {
+                  setShowForgotPassword(!showForgotPassword);
+                  setMessage(null);
+                }}
+                className="text-gray-600 hover:text-gray-800 text-sm"
+              >
+                {showForgotPassword ? 'Voltar ao login' : 'Esqueci minha senha'}
+              </button>
+            )}
           </div>
+
+          {/* Esqueci a senha */}
+          {!isSignUp && showForgotPassword && (
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-medium text-gray-700 mb-2">Redefinir Senha</h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Digite seu email e enviaremos instruções para redefinir sua senha.
+              </p>
+              <button
+                onClick={redefinirSenhaEmail}
+                disabled={loading || !email.trim()}
+                className="w-full bg-gray-600 text-white rounded-lg py-2 px-4 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Enviando...' : 'Enviar Email de Redefinição'}
+              </button>
+            </div>
+          )}
 
           {/* Message */}
           {message && (
