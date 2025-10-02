@@ -166,7 +166,7 @@ export default function AReceberPagarPage() {
                         {new Date(entrada.data as string).toLocaleDateString('pt-BR')}
                       </td>
                       <td className="border-b px-3 py-2">
-                        {entrada.cliente_nome || 'Sem nome'}
+                        {(entrada.cliente_nome as string) || 'Sem nome'}
                       </td>
                       <td className="border-b px-3 py-2 text-right font-medium">
                         R$ {Number(entrada.valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
@@ -231,7 +231,7 @@ export default function AReceberPagarPage() {
                         {new Date(despesa.data as string).toLocaleDateString('pt-BR')}
                       </td>
                       <td className="border-b px-3 py-2">
-                        {despesa.item}
+                        {despesa.item as string}
                       </td>
                       <td className="border-b px-3 py-2 text-right font-medium">
                         R$ {Number(despesa.valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
@@ -240,7 +240,7 @@ export default function AReceberPagarPage() {
                         {despesa.data_pagamento ? new Date(despesa.data_pagamento as string).toLocaleDateString('pt-BR') : '-'}
                       </td>
                       <td className="border-b px-3 py-2 text-xs">
-                        {despesa.fonte_pagadora || despesa.tipo || '-'}
+                        {(despesa.fonte_pagadora as string) || (despesa.tipo as string) || '-'}
                       </td>
                       <td className="border-b px-3 py-2 text-center">
                         <button
