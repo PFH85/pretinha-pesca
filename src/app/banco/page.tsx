@@ -212,8 +212,8 @@ export default function BancoPage() {
                     <td className="border px-2 py-1">{d.data as string}</td>
                     <td className="border px-2 py-1">
                       {d.item as string}
-                      {d.fonte_pagadora && ` (${d.fonte_pagadora as string})`}
-                      {!d.fonte_pagadora && d.pagador && ` (${d.pagador as string})`}
+                      {(d.fonte_pagadora as string) && ` (${d.fonte_pagadora as string})`}
+                      {!(d.fonte_pagadora as string) && (d.pagador as string) && ` (${d.pagador as string})`}
                     </td>
                     <td className="border px-2 py-1 text-right">{Number(d.valor).toFixed(2)}</td>
                   </tr>
