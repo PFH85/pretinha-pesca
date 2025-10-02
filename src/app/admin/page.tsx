@@ -169,7 +169,7 @@ export default function AdminPage() {
               </thead>
               <tbody>
                 {entradasParaMostrar.map((e: Record<string, unknown>) => (
-                  <tr key={e.id}>
+                  <tr key={e.id as string}>
                     <td className="border px-2 py-1"><input type="date" className="border rounded px-2 py-1" value={e.data || ''} onChange={(ev) => e.data = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={e.cliente_nome || ''} onChange={(ev) => e.cliente_nome = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={e.contato || ''} onChange={(ev) => e.contato = ev.target.value} /></td>
@@ -177,8 +177,8 @@ export default function AdminPage() {
                     <td className="border px-2 py-1"><input type="date" className="border rounded px-2 py-1" value={e.previsao || ''} onChange={(ev) => e.previsao = ev.target.value} /></td>
                     <td className="border px-2 py-1 text-center"><input type="checkbox" checked={!!e.pago} onChange={(ev) => e.pago = ev.target.checked} /></td>
                     <td className="border px-2 py-1 space-x-2">
-                      <button className="border rounded px-2 py-1" onClick={() => salvarLinha('entradas', e.id, { data: e.data, cliente_nome: e.cliente_nome || null, contato: e.contato || null, valor: e.valor, previsao: e.previsao || null, pago: !!e.pago })}>Salvar</button>
-                      <button className="border rounded px-2 py-1" onClick={() => excluirLinha('entradas', e.id)}>Excluir</button>
+                      <button className="border rounded px-2 py-1" onClick={() => salvarLinha('entradas', e.id as string, { data: e.data, cliente_nome: e.cliente_nome || null, contato: e.contato || null, valor: e.valor, previsao: e.previsao || null, pago: !!e.pago })}>Salvar</button>
+                      <button className="border rounded px-2 py-1" onClick={() => excluirLinha('entradas', e.id as string)}>Excluir</button>
                     </td>
                   </tr>
                 ))}
@@ -218,15 +218,15 @@ export default function AdminPage() {
               </thead>
               <tbody>
                 {despesasParaMostrar.map((d: Record<string, unknown>) => (
-                  <tr key={d.id}>
+                  <tr key={d.id as string}>
                     <td className="border px-2 py-1"><input type="date" className="border rounded px-2 py-1" value={d.data || ''} onChange={(ev) => d.data = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={d.item || ''} onChange={(ev) => d.item = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={d.tipo || ''} onChange={(ev) => d.tipo = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input type="number" step="0.01" className="border rounded px-2 py-1 text-right" value={d.valor ?? ''} onChange={(ev) => d.valor = ev.target.value === '' ? null : Number(ev.target.value)} /></td>
                     <td className="border px-2 py-1 text-center"><input type="checkbox" checked={!!d.pago} onChange={(ev) => d.pago = ev.target.checked} /></td>
                     <td className="border px-2 py-1 space-x-2">
-                      <button className="border rounded px-2 py-1" onClick={() => salvarLinha('despesas', d.id, { data: d.data, item: d.item, tipo: d.tipo, valor: d.valor, pago: !!d.pago })}>Salvar</button>
-                      <button className="border rounded px-2 py-1" onClick={() => excluirLinha('despesas', d.id)}>Excluir</button>
+                      <button className="border rounded px-2 py-1" onClick={() => salvarLinha('despesas', d.id as string, { data: d.data, item: d.item, tipo: d.tipo, valor: d.valor, pago: !!d.pago })}>Salvar</button>
+                      <button className="border rounded px-2 py-1" onClick={() => excluirLinha('despesas', d.id as string)}>Excluir</button>
                     </td>
                   </tr>
                 ))}
@@ -250,14 +250,14 @@ export default function AdminPage() {
               </thead>
               <tbody>
                 {ajustesFiltrados.map((a: Record<string, unknown>) => (
-                  <tr key={a.id}>
-                    <td className="border px-2 py-1">{a.created_at?.slice(0,10)}</td>
+                  <tr key={a.id as string}>
+                    <td className="border px-2 py-1">{(a.created_at as string)?.slice(0,10)}</td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={a.tipo || ''} onChange={(ev) => a.tipo = ev.target.value} /></td>
                     <td className="border px-2 py-1"><input type="number" step="0.01" className="border rounded px-2 py-1 text-right" value={a.valor ?? ''} onChange={(ev) => a.valor = ev.target.value === '' ? null : Number(ev.target.value)} /></td>
                     <td className="border px-2 py-1"><input className="border rounded px-2 py-1" value={a.motivo || ''} onChange={(ev) => a.motivo = ev.target.value} /></td>
                     <td className="border px-2 py-1 space-x-2">
-                      <button className="border rounded px-2 py-1" onClick={() => salvarLinha('ajustes_banco', a.id, { tipo: a.tipo, valor: a.valor, motivo: a.motivo || null })}>Salvar</button>
-                      <button className="border rounded px-2 py-1" onClick={() => excluirLinha('ajustes_banco', a.id)}>Excluir</button>
+                      <button className="border rounded px-2 py-1" onClick={() => salvarLinha('ajustes_banco', a.id as string, { tipo: a.tipo, valor: a.valor, motivo: a.motivo || null })}>Salvar</button>
+                      <button className="border rounded px-2 py-1" onClick={() => excluirLinha('ajustes_banco', a.id as string)}>Excluir</button>
                     </td>
                   </tr>
                 ))}
