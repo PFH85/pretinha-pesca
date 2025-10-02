@@ -58,8 +58,8 @@ export default function BancoPage() {
   const dataCorte = '2025-01-02'; // Data a partir da qual considerar movimentações
   
   // Filtrar apenas entradas/despesas criadas após a data de corte
-  const entradasNovas = entradasFiltradas.filter(e => e.data >= dataCorte);
-  const despesasNovas = despesasFiltradas.filter(d => d.data >= dataCorte);
+  const entradasNovas = entradasFiltradas.filter(e => (e.data as string) >= dataCorte);
+  const despesasNovas = despesasFiltradas.filter(d => (d.data as string) >= dataCorte);
   
   const somaEntradasNovas = entradasNovas.reduce((acc, i) => acc + Number(i.valor || 0), 0);
   const somaDespesasNovas = despesasNovas.reduce((acc, i) => acc + Number(i.valor || 0), 0);
