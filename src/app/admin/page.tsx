@@ -43,23 +43,23 @@ export default function AdminPage() {
   // Filtrar e manter ordenação por data mais recente
   const entradasFiltradas = useMemo(() => {
     return entradas
-      .filter((x) => (!de || x.data >= de) && (!ate || x.data <= ate))
-      .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+      .filter((x) => (!de || (x.data as string) >= de) && (!ate || (x.data as string) <= ate))
+      .sort((a, b) => new Date(b.data as string).getTime() - new Date(a.data as string).getTime());
   }, [entradas, de, ate]);
   
   const despesasFiltradas = useMemo(() => {
     return despesas
-      .filter((x) => (!de || x.data >= de) && (!ate || x.data <= ate))
-      .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+      .filter((x) => (!de || (x.data as string) >= de) && (!ate || (x.data as string) <= ate))
+      .sort((a, b) => new Date(b.data as string).getTime() - new Date(a.data as string).getTime());
   }, [despesas, de, ate]);
   
   const ajustesFiltrados = useMemo(() => {
     return ajustes
       .filter((x) => { 
-        const d = x.created_at?.slice(0,10); 
+        const d = (x.created_at as string)?.slice(0,10); 
         return (!de || d >= de) && (!ate || d <= ate); 
       })
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      .sort((a, b) => new Date(b.created_at as string).getTime() - new Date(a.created_at as string).getTime());
   }, [ajustes, de, ate]);
 
   // Arrays limitados para visualização inicial (últimas 10)
