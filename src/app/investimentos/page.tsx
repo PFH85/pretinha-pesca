@@ -19,10 +19,6 @@ export default function InvestimentosPage() {
   const [investimentos, setInvestimentos] = useState<Investimento[]>([]);
   const [totais, setTotais] = useState<{[key: string]: number}>({});
 
-  useEffect(() => {
-    carregarInvestimentos();
-  }, [carregarInvestimentos]);
-
   const carregarInvestimentos = useCallback(async () => {
     setLoading(true);
     
@@ -61,6 +57,10 @@ export default function InvestimentosPage() {
     setTotais(totaisPorCliente);
     setLoading(false);
   }, [supabase]);
+
+  useEffect(() => {
+    carregarInvestimentos();
+  }, [carregarInvestimentos]);
 
   const valorTotal = investimentos.reduce((sum, inv) => sum + (inv.valor || 0), 0);
 
