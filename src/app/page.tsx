@@ -1,6 +1,42 @@
+'use client';
+import { useEffect, useState } from 'react';
 import { Nav } from '@/components/Nav';
+import { getSupabaseClient } from '@/lib/supabaseClient';
 
 export default function HomePage() {
+  const supabase = getSupabaseClient();
+  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setAuthenticated(!!session);
+      setLoading(false);
+    })();
+  }, [supabase]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl mb-4">🎣</div>
+          <p>Carregando Pretinha Pesca...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!authenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl mb-4">🔒</div>
+          <p>Redirecionando para login...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <Nav />
