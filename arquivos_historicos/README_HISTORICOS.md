@@ -43,3 +43,4 @@ Esta pasta contém todos os arquivos utilizados durante o desenvolvimento e conf
 
 ---
 **Estes arquivos foram organizados para manter o projeto limpo e funcional.**
+

@@ -82,3 +82,4 @@ Para problemas técnicos ou dúvidas sobre o sistema, consulte:
 **🎉 SISTEMA PRONTO PARA USO DIÁRIO! 🎉**
 
 **Desenvolvido com**: Next.js, TypeScript, Supabase, Tailwind CSS
+

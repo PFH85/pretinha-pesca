@@ -250,6 +250,25 @@ export default function AdminPage() {
             </tfoot>
           </table>
           
+          <div style="margin-top: 30px; padding: 20px; border: 2px solid #2563eb; border-radius: 10px; background-color: #f8fafc;">
+            <h3 style="text-align: center; color: #2563eb; margin-bottom: 15px;">💳 DADOS PARA PAGAMENTO</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="flex: 1;">
+                <p style="margin: 5px 0;"><strong>Banco:</strong> Inter 007</p>
+                <p style="margin: 5px 0;"><strong>Agência:</strong> 0001</p>
+                <p style="margin: 5px 0;"><strong>Conta:</strong> 399556052</p>
+                <p style="margin: 5px 0;"><strong>Nome:</strong> Pedro Furtado Heringer</p>
+                <p style="margin: 5px 0;"><strong>Valor:</strong> R$ ${totalValor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+              </div>
+              <div style="flex: 0 0 120px; text-align: center;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`Banco: Inter 007|Agência: 0001|Conta: 399556052|Nome: Pedro Furtado Heringer|Valor: R$ ${totalValor.toFixed(2)}`)}" 
+                     alt="QR Code PIX" 
+                     style="width: 120px; height: 120px; border: 1px solid #ddd;" />
+              </div>
+            </div>
+            <p style="text-align: center; margin-top: 10px; font-size: 14px; color: #2563eb; font-weight: bold;">PIX somente via QR Code</p>
+          </div>
+          
           <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
             <p>Documento gerado automaticamente pela Pretinha Pesca</p>
             <p>Data: ${hoje}</p>
