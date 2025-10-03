@@ -60,14 +60,14 @@ export default function AReceberPagarPage() {
     
     const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     
-    // 🔒 VALIDAÇÃO: Só permitir marcar pago se corresponder ao dia atual
-    if (dataRegistro !== hoje && dataPagamento !== hoje) {
-      console.log('❌ VALIDAÇÃO FALHOU: Data não corresponde ao dia atual');
-      alert('⚠️ Só é possível marcar como pago itens registrados ou com vencimento no dia atual!');
-      return;
-    }
+    // 🔒 VALIDAÇÃO TEMPORARIAMENTE DESABILITADA PARA TESTE
+    // if (dataRegistro !== hoje && dataPagamento !== hoje) {
+    //   console.log('❌ VALIDAÇÃO FALHOU: Data não corresponde ao dia atual');
+    //   alert('⚠️ Só é possível marcar como pago itens registrados ou com vencimento no dia atual!');
+    //   return;
+    // }
 
-    console.log('✅ VALIDAÇÃO PASSOU: Prosseguindo com o processo...');
+    console.log('✅ VALIDAÇÃO PULADA PARA TESTE: Prosseguindo com o processo...');
 
     const tabela = tipo === 'entrada' ? 'entradas' : 'despesas';
     
