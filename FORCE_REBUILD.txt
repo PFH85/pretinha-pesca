@@ -1,0 +1,4 @@
+# FORCE REBUILD - Vercel Cache Clear
+# Este arquivo força o Vercel a fazer um rebuild completo
+# Data: $(date)
+# Versão: 2.0 - Deploy de Produção
