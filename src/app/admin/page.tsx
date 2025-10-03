@@ -33,7 +33,11 @@ export default function AdminPage() {
     setMsg(null);
     const e = await supabase.from('entradas').select('*').order('data', { ascending: false });
     const d = await supabase.from('despesas').select('*').order('data', { ascending: false });
-    const a = await supabase.from('ajustes_banco').select('*').order('created_at', { ascending: false });
+    const a = await supabase
+      .from('ajustes_banco')
+      .select('*')
+      .not('motivo', 'like', '%Investimento inicial%')
+      .order('created_at', { ascending: false });
     const c = await supabase.from('calculadoras_peixes').select('*').order('created_at', { ascending: false });
     // Não conseguimos acessar auth.users diretamente, então vamos usar mapeamento manual
     const u = { data: [] };
