@@ -289,8 +289,15 @@ export default function BancoPage() {
                     <td className="border px-2 py-1 text-right">{Number(e.valor).toFixed(2)}</td>
                   </tr>
                 ))}
+                {ajustesEntradas.map((a: Record<string, unknown>) => (
+                  <tr key={`ajuste-${a.id as string}`}>
+                    <td className="border px-2 py-1">{new Date(a.created_at as string).toLocaleDateString('pt-BR')}</td>
+                    <td className="border px-2 py-1">{(a.motivo as string) || 'Ajuste de banco'}</td>
+                    <td className="border px-2 py-1 text-right">{Number(a.valor).toFixed(2)}</td>
+                  </tr>
+                ))}
               </tbody>
-              <tfoot><tr className="bg-gray-50 font-medium"><td className="border px-2 py-1">Total</td><td className="border px-2 py-1"></td><td className="border px-2 py-1 text-right">{somaEntradasNovas.toFixed(2)}</td></tr></tfoot>
+              <tfoot><tr className="bg-gray-50 font-medium"><td className="border px-2 py-1">Total</td><td className="border px-2 py-1"></td><td className="border px-2 py-1 text-right">{(somaEntradasNovas + somaAjustesEntradas).toFixed(2)}</td></tr></tfoot>
             </table>
           </div>
           <div>
