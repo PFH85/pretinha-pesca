@@ -118,13 +118,14 @@ export default function AReceberPagarPage() {
       // ENTRADA: Se cliente = PH ou DICO → Investimentos, senão → continua no próprio sistema
       console.log('🔍 DEBUG ENTRADA COMPLETO:', { 
         cliente_nome: registro.cliente_nome, 
+        pagador: registro.pagador,
         valor: registro.valor,
         userId: userId,
         registroCompleto: registro
       });
       
-      if ((registro.cliente_nome as string) === 'PH' || (registro.cliente_nome as string) === 'DICO') {
-        console.log(`💰 INICIANDO: Criando investimento E entrada no banco para ${registro.cliente_nome}: R$ ${registro.valor}`);
+      if ((registro.pagador as string) === 'PH' || (registro.pagador as string) === 'DICO') {
+        console.log(`💰 INICIANDO: Criando investimento E entrada no banco para ${registro.pagador}: R$ ${registro.valor}`);
         
         // 1. Criar ajuste para Investimentos
         console.log('📝 Passo 1: Criando ajuste para investimentos...');
@@ -132,7 +133,7 @@ export default function AReceberPagarPage() {
           user_id: userId,
           tipo: 'entrada',
           valor: registro.valor,
-          motivo: `${registro.cliente_nome} - Entrada de cliente`
+          motivo: `${registro.pagador} - Entrada de cliente`
         }]);
 
         if (ajusteError) {
@@ -140,7 +141,7 @@ export default function AReceberPagarPage() {
           alert(`❌ Erro ao criar investimento: ${ajusteError.message}`);
           return; // Parar aqui se der erro
         } else {
-          console.log(`✅ SUCESSO: Investimento criado para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
+          console.log(`✅ SUCESSO: Investimento criado para entrada ${registro.pagador}: R$ ${registro.valor}`);
         }
 
         // 2. Criar entrada adicional no banco (ajuste para caixa da empresa)
@@ -149,7 +150,7 @@ export default function AReceberPagarPage() {
           user_id: userId,
           tipo: 'entrada',
           valor: registro.valor,
-          motivo: `EM - Caixa da empresa (${registro.cliente_nome})`
+          motivo: `EM - Caixa da empresa (${registro.pagador})`
         }]);
 
         if (bancoError) {
@@ -157,12 +158,12 @@ export default function AReceberPagarPage() {
           alert(`❌ Erro ao criar entrada no banco: ${bancoError.message}`);
           return; // Parar aqui se der erro
         } else {
-          console.log(`✅ SUCESSO: Entrada no caixa da empresa criada para ${registro.cliente_nome}: R$ ${registro.valor}`);
+          console.log(`✅ SUCESSO: Entrada no caixa da empresa criada para ${registro.pagador}: R$ ${registro.valor}`);
         }
 
-        alert(`✅ Investimento E entrada no banco criados para ${registro.cliente_nome}: R$ ${registro.valor}`);
+        alert(`✅ Investimento E entrada no banco criados para ${registro.pagador}: R$ ${registro.valor}`);
       } else {
-        console.log(`ℹ️ Entrada ${registro.cliente_nome} vai apenas para banco (não é PH/DICO)`);
+        console.log(`ℹ️ Entrada ${registro.pagador} vai apenas para banco (não é PH/DICO)`);
       }
     } else if (tipo === 'despesa') {
       // DESPESA: Se fonte = PH/DICO → Investimentos, se EM → Banco
