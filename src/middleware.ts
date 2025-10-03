@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server'
 
 export async function middleware(req: NextRequest) {
   // Temporariamente desabilitado para debug
+  // FORCE REBUILD: ${new Date().toISOString()}
   return NextResponse.next()
 }
 
