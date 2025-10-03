@@ -44,7 +44,7 @@ export default function BancoPage() {
       .from('entradas')
       .select('*')
       .eq('pago', false)
-      .or('pagador.eq.PH,pagador.eq.DICO')
+      .or('pagador.eq.PH,pagador.eq.DICO,pagador.eq.ph,pagador.eq.dico')
       .order('data', { ascending: false });
 
     setEntradas(e.data || []);
