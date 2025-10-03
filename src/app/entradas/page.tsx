@@ -55,6 +55,15 @@ export default function EntradasPage() {
       setStatus('⚠️ Selecione quem fez o pagamento quando marcar como pago.');
       return;
     }
+
+    // 🔒 VALIDAÇÃO CRÍTICA: Só pode marcar "Pago" se previsão = hoje
+    if (pago && previsao) {
+      const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      if (previsao !== hoje) {
+        setStatus('⚠️ Só é possível marcar como "Pago" se a data de previsão for hoje!');
+        return;
+      }
+    }
     
     const { data: userData } = await supabase.auth.getUser();
     const userId = userData.user?.id;
