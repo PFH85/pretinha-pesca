@@ -106,10 +106,22 @@ export default function BancoPage() {
   const entradasNovas = entradasFiltradas.filter(e => (e.data as string) >= dataCorte);
   const despesasNovas = despesasFiltradas.filter(d => (d.data as string) >= dataCorte);
   
+  // Incluir ajustes de banco no cálculo do saldo
+  const ajustesEntradas = ajustesFiltrados.filter(a => 
+    (a.tipo as string) === 'entrada' && 
+    (a.motivo as string)?.includes('EM Caixa empresa')
+  );
+  const ajustesSaidas = ajustesFiltrados.filter(a => 
+    (a.tipo as string) === 'saida' && 
+    (a.motivo as string)?.includes('EM')
+  );
+  
   const somaEntradasNovas = entradasNovas.reduce((acc, i) => acc + Number(i.valor || 0), 0);
   const somaDespesasNovas = despesasNovas.reduce((acc, i) => acc + Number(i.valor || 0), 0);
+  const somaAjustesEntradas = ajustesEntradas.reduce((acc, i) => acc + Number(i.valor || 0), 0);
+  const somaAjustesSaidas = ajustesSaidas.reduce((acc, i) => acc + Number(i.valor || 0), 0);
   
-  const saldoAtual = SALDO_INICIAL + somaEntradasNovas - somaDespesasNovas;
+  const saldoAtual = SALDO_INICIAL + somaEntradasNovas - somaDespesasNovas + somaAjustesEntradas - somaAjustesSaidas;
 
   function toCSV(values: string[]): string {
     return values
