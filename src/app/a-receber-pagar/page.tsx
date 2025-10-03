@@ -56,13 +56,18 @@ export default function AReceberPagarPage() {
 
   // Função para marcar como pago com validação de data
   async function marcarComoPago(tipo: 'entrada' | 'despesa', id: string, dataRegistro: string, dataPagamento?: string) {
+    console.log('🚀 FUNÇÃO marcarComoPago INICIADA:', { tipo, id, dataRegistro, dataPagamento });
+    
     const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     
     // 🔒 VALIDAÇÃO: Só permitir marcar pago se corresponder ao dia atual
     if (dataRegistro !== hoje && dataPagamento !== hoje) {
+      console.log('❌ VALIDAÇÃO FALHOU: Data não corresponde ao dia atual');
       alert('⚠️ Só é possível marcar como pago itens registrados ou com vencimento no dia atual!');
       return;
     }
+
+    console.log('✅ VALIDAÇÃO PASSOU: Prosseguindo com o processo...');
 
     const tabela = tipo === 'entrada' ? 'entradas' : 'despesas';
     
