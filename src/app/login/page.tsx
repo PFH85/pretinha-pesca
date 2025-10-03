@@ -70,9 +70,11 @@ export default function LoginPage() {
         if (error) {
           setMessage(`Erro no login: ${error.message}`);
         } else {
-          setMessage('✅ Login realizado com sucesso!');
-          // Forçar reload para garantir redirecionamento
-          window.location.href = '/';
+          setMessage('✅ Login realizado com sucesso! Redirecionando...');
+          // Forçar reload mais agressivo
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1000);
         }
       }
     } catch {
@@ -248,6 +250,17 @@ export default function LoginPage() {
                 : 'bg-red-100 text-red-800'
             }`}>
               {message}
+              
+              {message.includes('✅') && (
+                <div className="mt-3">
+                  <button
+                    onClick={() => window.location.href = '/'}
+                    className="bg-green-600 text-white rounded px-4 py-2 hover:bg-green-700"
+                  >
+                    ➡️ Ir para o Sistema
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
