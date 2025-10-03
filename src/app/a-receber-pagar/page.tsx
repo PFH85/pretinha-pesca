@@ -114,8 +114,9 @@ export default function AReceberPagarPage() {
       console.log('🔍 DEBUG ENTRADA:', { cliente_nome: registro.cliente_nome, valor: registro.valor });
       
       if ((registro.cliente_nome as string) === 'PH' || (registro.cliente_nome as string) === 'DICO') {
-        console.log(`💰 Criando investimento para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
+        console.log(`💰 Criando investimento E entrada no banco para ${registro.cliente_nome}: R$ ${registro.valor}`);
         
+        // 1. Criar ajuste para Investimentos
         const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
           user_id: userId,
           tipo: 'entrada',
@@ -124,14 +125,30 @@ export default function AReceberPagarPage() {
         }]);
 
         if (ajusteError) {
-          console.error('❌ Erro ao criar ajuste:', ajusteError);
+          console.error('❌ Erro ao criar investimento:', ajusteError);
           alert(`❌ Erro ao criar investimento: ${ajusteError.message}`);
         } else {
           console.log(`✅ Investimento criado para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
-          alert(`✅ Investimento criado para ${registro.cliente_nome}: R$ ${registro.valor}`);
         }
+
+        // 2. Criar ajuste para Banco (entrada normal)
+        const { error: bancoError } = await supabase.from('ajustes_banco').insert([{
+          user_id: userId,
+          tipo: 'entrada',
+          valor: registro.valor,
+          motivo: `${registro.cliente_nome} - Entrada no banco`
+        }]);
+
+        if (bancoError) {
+          console.error('❌ Erro ao criar entrada no banco:', bancoError);
+          alert(`❌ Erro ao criar entrada no banco: ${bancoError.message}`);
+        } else {
+          console.log(`✅ Entrada no banco criada para ${registro.cliente_nome}: R$ ${registro.valor}`);
+        }
+
+        alert(`✅ Investimento E entrada no banco criados para ${registro.cliente_nome}: R$ ${registro.valor}`);
       } else {
-        console.log(`ℹ️ Entrada ${registro.cliente_nome} não é investimento (não é PH/DICO)`);
+        console.log(`ℹ️ Entrada ${registro.cliente_nome} vai apenas para banco (não é PH/DICO)`);
       }
     } else if (tipo === 'despesa') {
       // DESPESA: Se fonte = PH/DICO → Investimentos, se EM → Banco
