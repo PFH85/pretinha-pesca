@@ -158,14 +158,14 @@ export default function DespesasPage() {
             />
           </label>
           <label className="grid gap-1">
-            <span>Tipo de Despesa *</span>
+            <span>📋 Tipo de Despesa (OBRIGATÓRIO!) *</span>
             <select 
               value={tipo === TIPOS_EMAIL_CUSTOMIZADO ? 'Outros' : tipo} 
               onChange={(e) => setTipo(e.target.value)} 
-              className="border rounded px-3 py-2" 
+              className="border rounded px-3 py-2 text-red-600 font-bold" 
               required
             >
-              <option value="">Selecione um tipo...</option>
+              <option value="">❌ Selecionar tipo OBRIGATÓRIO...</option>
               {TIPOS.map((t) => (
                 <option key={t} value={t}>{t}</option>
               ))}
@@ -188,8 +188,8 @@ export default function DespesasPage() {
           )}
           
           <label className="grid gap-1">
-            <span>Data de hoje</span>
-            <input type="date" value={data} readOnly className="border rounded px-3 py-2 bg-gray-50" />
+            <span>🗓️ Data de Hoje (Automática) 🗓️</span>
+            <input type="date" value={data} readOnly className="border rounded px-3 py-2 bg-gray-100" disabled />
           </label>
           <label className="grid gap-1">
             <span>Fonte Pagadora</span>
