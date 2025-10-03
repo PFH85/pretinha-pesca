@@ -107,6 +107,30 @@ export default function AdminPage() {
     await carregar();
   }
 
+  async function deletarCalculadora(id: string) {
+    // 🔒 CONFIRMAÇÃO DE SEGURANÇA
+    const confirmacao = window.confirm(
+      '⚠️ ATENÇÃO: Esta ação não pode ser desfeita!\n\n' +
+      'Tem certeza que deseja excluir este orçamento?\n\n' +
+      '• O PDF não poderá mais ser gerado\n' +
+      '• Esta ação é irreversível\n\n' +
+      'Confirma a exclusão?'
+    );
+    
+    if (!confirmacao) {
+      return; // Usuário cancelou
+    }
+    
+    setMsg(null);
+    const { error } = await supabase.from('calculadoras_peixes').delete().eq('id', id);
+    if (error) { 
+      setMsg(`Erro ao excluir orçamento: ${error.message}`); 
+      return; 
+    }
+    setMsg('✅ Orçamento excluído com sucesso.');
+    await carregar(); // Recarrega para atualizar a lista
+  }
+
   if (authorized === null) {
     return (
       <div>
@@ -415,6 +439,7 @@ export default function AdminPage() {
                   <th className="border px-2 py-1">Vencimento</th>
                   <th className="border px-2 py-1">Usuário</th>
                   <th className="border px-2 py-1">PDF</th>
+                  <th className="border px-2 py-1">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -444,6 +469,15 @@ export default function AdminPage() {
                         onClick={() => gerarPDF(calc)}
                       >
                         📄 Gerar PDF
+                      </button>
+                    </td>
+                    <td className="border px-2 py-1 text-center">
+                      <button 
+                        className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700"
+                        onClick={() => deletarCalculadora(calc.id as string)}
+                        title="Deletar orçamento"
+                      >
+                        ❌
                       </button>
                     </td>
                   </tr>
