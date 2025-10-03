@@ -86,10 +86,29 @@ export default function EntradasPage() {
       return;
     }
 
-    // Investimentos são criados automaticamente na aba "A Receber/A Pagar"
-    // quando o pagador for PH/DICO
-    
-    setStatus('Salvo com sucesso.');
+    // Se marcou como pago e pagador é PH/DICO, criar investimento e banco
+    if (pago && (pagador === 'PH' || pagador === 'DICO' || pagador === 'ph' || pagador === 'dico')) {
+      try {
+        const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
+          user_id: userId,
+          tipo: 'entrada',
+          valor: typeof valor === 'string' && valor === '' ? 0 : Number(valor),
+          motivo: `${pagador} - Investimento + EM Caixa empresa`
+        }]);
+        
+        if (ajusteError) {
+          console.error('❌ Erro ao criar investimento/banco:', ajusteError);
+          setStatus(`⚠️ Entrada salva, mas erro ao criar investimento: ${ajusteError.message}`);
+        } else {
+          setStatus('✅ Entrada salva e investimento/banco criados com sucesso!');
+        }
+      } catch (error) {
+        console.error('❌ Erro geral:', error);
+        setStatus(`⚠️ Entrada salva, mas erro ao criar investimento: ${error}`);
+      }
+    } else {
+      setStatus('Salvo com sucesso.');
+    }
     setValor('');
     setPrevisao('');
     setPago(false);
