@@ -144,40 +144,21 @@ export default function AReceberPagarPage() {
         console.log(`💰 CRIANDO INVESTIMENTO E BANCO para ${pagadorTrim}`);
         
         try {
-          // 1. INVESTIMENTO
-          console.log('📝 Criando investimento...');
-          const { error: investError } = await supabase.from('ajustes_banco').insert([{
+          // INSERÇÃO ÚNICA: Investimento + Banco em um só registro
+          console.log('📝 Criando registro único (investimento + banco)...');
+          const { error: insertError } = await supabase.from('ajustes_banco').insert([{
             user_id: userId,
             tipo: 'entrada',
             valor: registro.valor,
-            motivo: `${pagadorTrim} - Investimento`
+            motivo: `${pagadorTrim} - Investimento + EM Caixa empresa`
           }]);
           
-          if (investError) {
-            console.error('❌ Erro ao criar investimento:', investError);
-            alert(`❌ Erro ao criar investimento: ${investError.message}`);
+          if (insertError) {
+            console.error('❌ Erro ao criar registro:', insertError);
+            alert(`❌ Erro: ${insertError.message}`);
             return;
           }
-          console.log('✅ Investimento criado com sucesso');
-          
-          // Pequeno delay para evitar conflitos
-          await new Promise(resolve => setTimeout(resolve, 100));
-          
-          // 2. BANCO (caixa da empresa)
-          console.log('📝 Criando entrada no banco...');
-          const { error: bancoError } = await supabase.from('ajustes_banco').insert([{
-            user_id: userId,
-            tipo: 'entrada',
-            valor: registro.valor,
-            motivo: `EM - Caixa empresa (${pagadorTrim})`
-          }]);
-          
-          if (bancoError) {
-            console.error('❌ Erro ao criar banco:', bancoError);
-            alert(`❌ Erro ao criar banco: ${bancoError.message}`);
-            return;
-          }
-          console.log('✅ Banco criado com sucesso');
+          console.log('✅ Registro criado com sucesso (investimento + banco)');
           
           alert(`✅ Criado investimento e entrada no banco para ${pagadorTrim}`);
         } catch (error) {
