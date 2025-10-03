@@ -4,12 +4,16 @@ import { Nav } from '@/components/Nav';
 import { format } from 'date-fns';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 
-const TIPOS = ['Despesa fixa', 'Despesa variável', 'Pessoal', 'Material de pesca', 'Manutenção', 'Outros'];
+const TIPOS = ['Despesa fixa', 'Despesa variável', 'Pessoal', 'Material de pesca', 'Manutenção'];
+
+// TIPOS CUSTOMIZADOS - Quando escolher "Outros", mostrar campo de texto
+const TIPOS_EMAIL_CUSTOMIZADO = 'Outros (especificar):';
 
 export default function DespesasPage() {
   const supabase = getSupabaseClient();
   const [item, setItem] = useState('');
   const [tipo, setTipo] = useState('');
+  const [tipoCustomizado, setTipoCustomizado] = useState('');
   const [data, setData] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [valor, setValor] = useState<number | ''>('');
   const [pago, setPago] = useState(false);
@@ -35,6 +39,15 @@ export default function DespesasPage() {
       setStatus('⚠️ Selecione o tipo de despesa.');
       return;
     }
+
+    // Se escolheu "Outros", validar tipo customizado
+    if (tipo === 'Outros' && (!tipoCustomizado || tipoCustomizado.trim().length < 3)) {
+      setStatus('⚠️ Especifique o tipo de despesa (mínimo 3 caracteres).');
+      return;
+    }
+
+    // Determinar tipo final
+    const tipoFinal = tipo === 'Outros' ? tipoCustomizado.trim() : tipo;
     
     // Validar valor
     if (!valor || valor <= 0) {
@@ -81,7 +94,7 @@ export default function DespesasPage() {
       {
         user_id: userId,
         item,
-        tipo,
+        tipo: tipoFinal,
         data,
         valor: typeof valor === 'string' && valor === '' ? 0 : Number(valor),
         pago,
@@ -118,6 +131,7 @@ export default function DespesasPage() {
     setStatus('Salvo com sucesso.');
     setItem('');
     setTipo('');
+    setTipoCustomizado('');
     setData(format(new Date(), 'yyyy-MM-dd'));
     setValor('');
     setPago(false);
@@ -144,17 +158,38 @@ export default function DespesasPage() {
             />
           </label>
           <label className="grid gap-1">
-            <span>Tipo de Despesa</span>
-            <input list="tipos" value={tipo} onChange={(e) => setTipo(e.target.value)} className="border rounded px-3 py-2" required />
-            <datalist id="tipos">
+            <span>Tipo de Despesa *</span>
+            <select 
+              value={tipo === TIPOS_EMAIL_CUSTOMIZADO ? 'Outros' : tipo} 
+              onChange={(e) => setTipo(e.target.value)} 
+              className="border rounded px-3 py-2" 
+              required
+            >
+              <option value="">Selecione um tipo...</option>
               {TIPOS.map((t) => (
-                <option key={t} value={t} />
+                <option key={t} value={t}>{t}</option>
               ))}
-            </datalist>
+              <option value="Outros">Outros (especificar)</option>
+            </select>
           </label>
+          
+          {tipo === 'Outros' && (
+            <label className="grid gap-1">
+              <span>Especificar tipo *</span>
+              <input
+                type="text"
+                value={tipoCustomizado}
+                onChange={(e) => setTipoCustomizado(e.target.value)}
+                className="border rounded px-3 py-2"
+                placeholder="Digite o tipo de despesa"
+                required={tipo === 'Outros'}
+              />
+            </label>
+          )}
+          
           <label className="grid gap-1">
             <span>Data (automática do dia)</span>
-            <input type="date" value={data} onChange={(e) => setData(e.target.value)} className="border rounded px-3 py-2" />
+            <input type="date" value={data} readOnly className="border rounded px-3 py-2 bg-gray-50" />
           </label>
           <label className="grid gap-1">
             <span>Fonte Pagadora</span>

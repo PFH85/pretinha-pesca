@@ -100,11 +100,20 @@ export default function AReceberPagarPage() {
     }
 
     // 🔄 FLUXO CORRETO: Determinar destino conforme fonte pagadora
+    // Buscar user_id atual
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    
+    if (!userId) {
+      alert('❌ Erro: Usuário não autenticado.');
+      return;
+    }
+
     if (tipo === 'entrada') {
       // ENTRADA: Se cliente = PH ou DICO → Investimentos, senão → continua no próprio sistema
       if (registro.cliente_nome === 'PH' || registro.cliente_nome === 'DICO') {
         const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
-          user_id: registro.user_id,
+          user_id: userId,
           tipo: 'entrada',
           valor: registro.valor,
           motivo: `${registro.cliente_nome} - ${registro.cliente_nome || 'Entrada de cliente'}`
@@ -112,6 +121,8 @@ export default function AReceberPagarPage() {
 
         if (ajusteError) {
           console.error('Erro ao criar ajuste:', ajusteError);
+        } else {
+          console.log(`✅ Investimento criado para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
         }
       }
     } else if (tipo === 'despesa') {
@@ -121,7 +132,7 @@ export default function AReceberPagarPage() {
       if (fontePagadora === 'PH' || fontePagadora === 'DICO') {
         // Criar ajuste para Investimentos
         const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
-          user_id: registro.user_id,
+          user_id: userId,
           tipo: 'saida',
           valor: registro.valor,
           motivo: `${fontePagadora} - ${registro.item}`
@@ -129,6 +140,8 @@ export default function AReceberPagarPage() {
 
         if (ajusteError) {
           console.error('Erro ao criar ajuste:', ajusteError);
+        } else {
+          console.log(`✅ Investimento criado para despesa ${fontePagadora}: R$ ${registro.valor}`);
         }
       }
       // Se fonte_pagadora = EM, não precisa criar ajuste adicional pois vai para banco automaticamente
