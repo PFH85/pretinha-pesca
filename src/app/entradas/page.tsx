@@ -152,7 +152,14 @@ export default function EntradasPage() {
           </label>
           <label className="grid gap-1">
             <span>🗓️ Data de Hoje (Automática) 🗓️</span>
-            <input type="date" value={hoje} readOnly className="border rounded px-3 py-2 bg-gray-100" disabled />
+            <input 
+              type="date" 
+              value={hoje} 
+              readOnly 
+              className="border rounded px-3 py-2 bg-gray-200 cursor-not-allowed" 
+              disabled 
+              style={{pointerEvents: 'none', userSelect: 'none'}}
+            />
           </label>
           <label className="grid gap-1">
             <span>Previsão de recebimento</span>
