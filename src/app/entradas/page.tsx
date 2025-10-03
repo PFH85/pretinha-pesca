@@ -9,7 +9,7 @@ export default function EntradasPage() {
   const [valor, setValor] = useState<number | ''>('');
   const [previsao, setPrevisao] = useState<string>('');
   const [pago, setPago] = useState(false);
-  const [pagador, setPagador] = useState('');
+  const [pagador, setPagador] = useState('EM');
   const [cliente, setCliente] = useState('');
   const [contato, setContato] = useState('');
   const [status, setStatus] = useState<string | null>(null);
@@ -50,11 +50,7 @@ export default function EntradasPage() {
       }
     }
     
-    // Validar se pagador foi selecionado quando pago = true
-    if (pago && !pagador) {
-      setStatus('⚠️ Selecione quem fez o pagamento quando marcar como pago.');
-      return;
-    }
+    // Pagador sempre preenchido (pré-definido como EM)
 
     // 🔒 VALIDAÇÃO CRÍTICA: Só pode marcar "Pago" se previsão = hoje
     if (pago && previsao) {
@@ -113,7 +109,7 @@ export default function EntradasPage() {
     setValor('');
     setPrevisao('');
     setPago(false);
-    setPagador('');
+    setPagador('EM');
     setCliente('');
     setContato('');
   }
@@ -174,27 +170,25 @@ export default function EntradasPage() {
             <span>Previsão de recebimento</span>
             <input type="date" value={previsao} onChange={(e) => setPrevisao(e.target.value)} className="border rounded px-3 py-2" />
           </label>
+          
+          <label className="grid gap-1">
+            <span>Quem fará o pagamento? *</span>
+            <select 
+              value={pagador} 
+              onChange={(e) => setPagador(e.target.value)} 
+              className="border rounded px-3 py-2"
+              required
+            >
+              <option value="EM">EM</option>
+              <option value="PH">PH</option>
+              <option value="DICO">DICO</option>
+            </select>
+          </label>
+          
           <label className="inline-flex items-center gap-2">
             <input type="checkbox" checked={pago} onChange={(e) => setPago(e.target.checked)} />
             <span>Pago</span>
           </label>
-          
-          {pago && (
-            <label className="grid gap-1">
-              <span>Quem fez o pagamento? *</span>
-              <select 
-                value={pagador} 
-                onChange={(e) => setPagador(e.target.value)} 
-                className="border rounded px-3 py-2"
-                required
-              >
-                <option value="">Selecione...</option>
-                <option value="PH">PH</option>
-                <option value="EM">EM</option>
-                <option value="DICO">DICO</option>
-              </select>
-            </label>
-          )}
           
           <button className="bg-black text-white rounded px-3 py-2 w-fit">Salvar</button>
           {status && <p className="text-sm">{status}</p>}
