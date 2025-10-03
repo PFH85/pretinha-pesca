@@ -14,6 +14,7 @@ export default function AdminPage() {
   const [despesas, setDespesas] = useState<Record<string, unknown>[]>([]);
   const [ajustes, setAjustes] = useState<Record<string, unknown>[]>([]);
   const [calculadoras, setCalculadoras] = useState<Record<string, unknown>[]>([]);
+  const [usuarios, setUsuarios] = useState<Record<string, unknown>[]>([]);
   const [mostrarTodasEntradas, setMostrarTodasEntradas] = useState(false);
   const [mostrarTodasDespesas, setMostrarTodasDespesas] = useState(false);
 
@@ -34,10 +35,12 @@ export default function AdminPage() {
     const d = await supabase.from('despesas').select('*').order('data', { ascending: false });
     const a = await supabase.from('ajustes_banco').select('*').order('created_at', { ascending: false });
     const c = await supabase.from('calculadoras_peixes').select('*').order('created_at', { ascending: false });
+    const u = await supabase.from('auth.users').select('id, email').order('created_at', { ascending: false });
     setEntradas(e.data || []);
     setDespesas(d.data || []);
     setAjustes(a.data || []);
     setCalculadoras(c.data || []);
+    setUsuarios(u.data || []);
     setLoading(false);
   }, [supabase]);
 
@@ -123,8 +126,13 @@ export default function AdminPage() {
 
   // Função para obter prefixo do email do usuário
   function getUserEmailPrefix(userId: string): string {
-    // Por enquanto retorna as primeiras 5 letras do ID
-    // Em uma versão futura, podemos buscar o email real do usuário
+    const usuario = usuarios.find((u: any) => u.id === userId);
+    if (usuario && usuario.email) {
+      // Pega as primeiras 5 letras do email antes do @
+      const emailPrefix = (usuario.email as string).split('@')[0];
+      return emailPrefix.substring(0, 5).toLowerCase();
+    }
+    // Fallback: primeiras 5 letras do ID
     return userId.substring(0, 5).toUpperCase();
   }
 
