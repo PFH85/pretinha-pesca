@@ -185,7 +185,7 @@ export default function CalculadoraPage() {
               <p style="margin: 5px 0;"><strong>Valor:</strong> R$ ${totais.totalValor.toFixed(2)}</p>
             </div>
             <div style="flex: 0 0 120px; text-align: center;">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`Banco: Inter 007|Agência: 0001|Conta: 399556052|Nome: Pedro Furtado Heringer|Valor: R$ ${totais.totalValor.toFixed(2)}`)}" 
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`00020101021126580014br.gov.bcb.pix013663b8f88f-d851-4478-8188-570e2dece21c5204000053039865802BR5922PEDRO FURTADO HERINGER6013RIO DE JANEIR62070503***63040437`)}" 
                    alt="QR Code PIX" 
                    style="width: 120px; height: 120px; border: 1px solid #ddd;" />
             </div>
