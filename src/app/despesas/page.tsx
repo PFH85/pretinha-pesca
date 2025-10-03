@@ -62,17 +62,22 @@ export default function DespesasPage() {
     
     // Validar data de pagamento
     if (dataPagamento) {
-      const hoje = new Date();
-      const dataPag = new Date(dataPagamento);
-      const diffDias = (dataPag.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24);
+      const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      const dataPag = dataPagamento;
       
-      if (diffDias > 365) {
-        setStatus('⚠️ Data de pagamento não pode ser superior a 1 ano.');
+      // Não permitir data anterior a hoje
+      if (dataPag < hoje) {
+        setStatus('⚠️ Data de pagamento não pode ser anterior a hoje.');
         return;
       }
       
-      if (diffDias < -30) {
-        setStatus('⚠️ Data de pagamento não pode ser anterior a 30 dias.');
+      // Não permitir data superior a 1 ano
+      const hojeObj = new Date();
+      const dataPagObj = new Date(dataPagamento);
+      const diffDias = (dataPagObj.getTime() - hojeObj.getTime()) / (1000 * 60 * 60 * 24);
+      
+      if (diffDias > 365) {
+        setStatus('⚠️ Data de pagamento não pode ser superior a 1 ano.');
         return;
       }
     }
@@ -242,6 +247,7 @@ export default function DespesasPage() {
               onChange={(e) => setDataPagamento(e.target.value)} 
               className="border rounded px-3 py-2" 
               placeholder="Data prevista para pagamento"
+              min={new Date().toISOString().split('T')[0]}
             />
           </label>
           <label className="inline-flex items-center gap-2">

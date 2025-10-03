@@ -40,9 +40,19 @@ export default function EntradasPage() {
     
     // Validar data de previsão
     if (previsao) {
-      const hoje = new Date();
-      const dataPrevisao = new Date(previsao);
-      const diffDias = (dataPrevisao.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24);
+      const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      const dataPrevisao = previsao;
+      
+      // Não permitir data anterior a hoje
+      if (dataPrevisao < hoje) {
+        setStatus('⚠️ Data de previsão não pode ser anterior a hoje.');
+        return;
+      }
+      
+      // Não permitir data superior a 1 ano
+      const hojeObj = new Date();
+      const dataPrevisaoObj = new Date(previsao);
+      const diffDias = (dataPrevisaoObj.getTime() - hojeObj.getTime()) / (1000 * 60 * 60 * 24);
       
       if (diffDias > 365) {
         setStatus('⚠️ Data de previsão não pode ser superior a 1 ano.');
@@ -171,7 +181,13 @@ export default function EntradasPage() {
           </label>
           <label className="grid gap-1">
             <span>Previsão de recebimento</span>
-            <input type="date" value={previsao} onChange={(e) => setPrevisao(e.target.value)} className="border rounded px-3 py-2" />
+            <input 
+              type="date" 
+              value={previsao} 
+              onChange={(e) => setPrevisao(e.target.value)} 
+              className="border rounded px-3 py-2" 
+              min={new Date().toISOString().split('T')[0]}
+            />
           </label>
           
           <label className="grid gap-1">
