@@ -11,6 +11,7 @@ export default function CalculadoraPage() {
   const [nomeCalculadora, setNomeCalculadora] = useState('');
   const [dataPagamento, setDataPagamento] = useState('');
   const [status, setStatus] = useState<string | null>(null);
+  const [calculadoraSalva, setCalculadoraSalva] = useState(false);
 
   const totais = useMemo(() => {
     let totalPeso = 0;
@@ -98,9 +99,16 @@ export default function CalculadoraPage() {
     }
 
     setStatus('Calculadora salva com sucesso!');
+    setCalculadoraSalva(true);
   }
 
   function exportarPDF() {
+    // 🔒 VALIDAÇÃO: Só permite gerar PDF se estiver salva
+    if (!calculadoraSalva) {
+      setStatus('⚠️ Salve a calculadora antes de gerar o PDF com PIX!');
+      return;
+    }
+
     // Criar conteúdo HTML para o PDF
     const linhasComDados = linhas.filter(l => l.peixe || l.precoKg || l.pesoKg);
     
@@ -211,6 +219,7 @@ export default function CalculadoraPage() {
     setNomeCalculadora('');
     setDataPagamento('');
     setStatus(null);
+    setCalculadoraSalva(false);
   }
 
   return (
@@ -264,8 +273,15 @@ export default function CalculadoraPage() {
             </button>
           </div>
           
+          {/* Indicador de status de salvamento */}
+          {calculadoraSalva && (
+            <div className="bg-green-100 border border-green-300 rounded-lg p-3">
+              <p className="text-green-800 font-semibold">✅ Calculadora salva - Pode gerar PDF com PIX</p>
+            </div>
+          )}
+          
           {status && (
-            <p className={`text-sm ${status.includes('Erro') ? 'text-red-600' : 'text-green-600'}`}>
+            <p className={`text-sm ${status.includes('Erro') || status.includes('⚠️') ? 'text-red-600' : 'text-green-600'}`}>
               {status}
             </p>
           )}
