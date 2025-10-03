@@ -131,12 +131,17 @@ export default function AReceberPagarPage() {
 
     if (tipo === 'entrada') {
       console.log('🔍 ENTRADA - Pagador:', registro.pagador);
+      console.log('🔍 ENTRADA - Pagador length:', registro.pagador?.length);
+      console.log('🔍 ENTRADA - Pagador charCodeAt:', registro.pagador?.charCodeAt(0), registro.pagador?.charCodeAt(1));
       
       // REGRA SIMPLES: Se pagador = PH ou DICO → Investimento + Banco
-      if (registro.pagador === 'PH' || registro.pagador === 'DICO' || 
-          registro.pagador === 'ph' || registro.pagador === 'dico') {
+      const pagadorTrim = registro.pagador?.toString().trim();
+      console.log('🔍 ENTRADA - Pagador trim:', pagadorTrim);
+      
+      if (pagadorTrim === 'PH' || pagadorTrim === 'DICO' || 
+          pagadorTrim === 'ph' || pagadorTrim === 'dico') {
         
-        console.log(`💰 CRIANDO INVESTIMENTO E BANCO para ${registro.pagador}`);
+        console.log(`💰 CRIANDO INVESTIMENTO E BANCO para ${pagadorTrim}`);
         
         // 1. INVESTIMENTO
         await supabase.from('ajustes_banco').insert([{
