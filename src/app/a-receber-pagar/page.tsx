@@ -94,6 +94,11 @@ export default function AReceberPagarPage() {
       .eq('id', id)
       .single();
 
+    console.log('🔍 REGISTRO COMPLETO BUSCADO:', registro);
+    console.log('🔍 PAGADOR ESPECÍFICO:', registro?.pagador);
+    console.log('🔍 TIPO DO PAGADOR:', typeof registro?.pagador);
+    console.log('🔍 PAGADOR TRIM/UPPER:', registro?.pagador?.toString().toUpperCase().trim());
+
     const { error } = await supabase
       .from(tabela)
       .update({ pago: true })
