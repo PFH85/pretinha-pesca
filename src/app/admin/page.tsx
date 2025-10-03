@@ -35,7 +35,8 @@ export default function AdminPage() {
     const d = await supabase.from('despesas').select('*').order('data', { ascending: false });
     const a = await supabase.from('ajustes_banco').select('*').order('created_at', { ascending: false });
     const c = await supabase.from('calculadoras_peixes').select('*').order('created_at', { ascending: false });
-    const u = await supabase.from('auth.users').select('id, email').order('created_at', { ascending: false });
+    // Não conseguimos acessar auth.users diretamente, então vamos usar mapeamento manual
+    const u = { data: [] };
     setEntradas(e.data || []);
     setDespesas(d.data || []);
     setAjustes(a.data || []);
@@ -126,13 +127,18 @@ export default function AdminPage() {
 
   // Função para obter prefixo do email do usuário
   function getUserEmailPrefix(userId: string): string {
-    const usuario = usuarios.find((u: any) => u.id === userId);
-    if (usuario && usuario.email) {
-      // Pega as primeiras 5 letras do email antes do @
-      const emailPrefix = (usuario.email as string).split('@')[0];
-      return emailPrefix.substring(0, 5).toLowerCase();
+    // Mapeamento manual dos IDs conhecidos
+    const userMap: Record<string, string> = {
+      '6da7dab9-b099-4fb6-9f96-45998cbdc129': 'admin', // admin@pretinha.com
+      // Adicione outros IDs conforme necessário
+    };
+    
+    // Se temos o ID mapeado, usa o prefixo
+    if (userMap[userId]) {
+      return userMap[userId];
     }
-    // Fallback: primeiras 5 letras do ID
+    
+    // Fallback: primeiras 5 letras do ID em maiúsculo
     return userId.substring(0, 5).toUpperCase();
   }
 
