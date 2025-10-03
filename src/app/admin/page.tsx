@@ -410,7 +410,7 @@ export default function AdminPage() {
                         onClick={() => gerarPDF(calc)}
                       >
                         📄 Gerar PDF
-<｜tool▁calls▁end｜> </button>
+                      </button>
                     </td>
                   </tr>
                 ))}
