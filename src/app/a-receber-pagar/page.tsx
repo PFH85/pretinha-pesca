@@ -56,7 +56,7 @@ export default function AReceberPagarPage() {
 
   // Função para marcar como pago com validação de data
   async function marcarComoPago(tipo: 'entrada' | 'despesa', id: string, dataRegistro: string, dataPagamento?: string) {
-    console.log('🚀 FUNÇÃO marcarComoPago INICIADA:', { tipo, id, dataRegistro, dataPagamento });
+    console.log('🚀 INÍCIO DA FUNÇÃO:', { tipo, id, dataRegistro, dataPagamento });
     
     const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     
@@ -70,6 +70,7 @@ export default function AReceberPagarPage() {
     console.log('✅ VALIDAÇÃO PULADA PARA TESTE: Prosseguindo com o processo...');
 
     const tabela = tipo === 'entrada' ? 'entradas' : 'despesas';
+    console.log('📋 TABELA:', tabela);
     
     // Buscar valor para confirmação
     const { data: registroTemp } = await supabase
@@ -78,6 +79,8 @@ export default function AReceberPagarPage() {
       .eq('id', id)
       .single();
 
+    console.log('💰 VALOR BUSCADO:', registroTemp);
+
     const valor = Number(registroTemp?.valor || 0);
     
     // Confirmar ação crítica
@@ -85,7 +88,14 @@ export default function AReceberPagarPage() {
       ? `Confirmar recebimento de R$ ${valor.toLocaleString('pt-BR')}?`
       : `Confirmar pagamento de R$ ${valor.toLocaleString('pt-BR')}?`;
     
-    if (!confirm(confirmacao)) return;
+    console.log('❓ CONFIRMAÇÃO:', confirmacao);
+    
+    if (!confirm(confirmacao)) {
+      console.log('❌ USUÁRIO CANCELOU');
+      return;
+    }
+
+    console.log('✅ USUÁRIO CONFIRMOU');
     
     // Primeiro buscar os dados completos para determinar destino
     const { data: registro } = await supabase
