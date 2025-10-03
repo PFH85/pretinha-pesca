@@ -64,6 +64,8 @@ export default function AReceberPagarPage() {
       return;
     }
 
+    const tabela = tipo === 'entrada' ? 'entradas' : 'despesas';
+    
     // Buscar valor para confirmação
     const { data: registroTemp } = await supabase
       .from(tabela)
@@ -79,8 +81,6 @@ export default function AReceberPagarPage() {
       : `Confirmar pagamento de R$ ${valor.toLocaleString('pt-BR')}?`;
     
     if (!confirm(confirmacao)) return;
-
-    const tabela = tipo === 'entrada' ? 'entradas' : 'despesas';
     
     // Primeiro buscar os dados completos para determinar destino
     const { data: registro } = await supabase
