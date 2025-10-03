@@ -188,7 +188,7 @@ export default function DespesasPage() {
           )}
           
           <label className="grid gap-1">
-            <span>Data (automática do dia)</span>
+            <span>Data de hoje</span>
             <input type="date" value={data} readOnly className="border rounded px-3 py-2 bg-gray-50" />
           </label>
           <label className="grid gap-1">

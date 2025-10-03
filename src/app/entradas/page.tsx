@@ -151,7 +151,7 @@ export default function EntradasPage() {
             />
           </label>
           <label className="grid gap-1">
-            <span>Data (automática)</span>
+            <span>Data de hoje</span>
             <input type="date" value={hoje} readOnly className="border rounded px-3 py-2 bg-gray-50" />
           </label>
           <label className="grid gap-1">
