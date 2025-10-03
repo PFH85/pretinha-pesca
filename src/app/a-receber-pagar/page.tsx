@@ -120,55 +120,31 @@ export default function AReceberPagarPage() {
     }
 
     if (tipo === 'entrada') {
-      // ENTRADA: Se cliente = PH ou DICO → Investimentos, senão → continua no próprio sistema
-      console.log('🔍 DEBUG ENTRADA COMPLETO:', { 
-        cliente_nome: registro.cliente_nome, 
-        pagador: registro.pagador,
-        valor: registro.valor,
-        userId: userId,
-        registroCompleto: registro
-      });
+      console.log('🔍 ENTRADA - Pagador:', registro.pagador);
       
-      if ((registro.pagador as string)?.toUpperCase().trim() === 'PH' || (registro.pagador as string)?.toUpperCase().trim() === 'DICO') {
-        console.log(`💰 INICIANDO: Criando investimento E entrada no banco para ${registro.pagador}: R$ ${registro.valor}`);
+      // REGRA SIMPLES: Se pagador = PH ou DICO → Investimento + Banco
+      if (registro.pagador === 'PH' || registro.pagador === 'DICO' || 
+          registro.pagador === 'ph' || registro.pagador === 'dico') {
         
-        // 1. Criar ajuste para Investimentos
-        console.log('📝 Passo 1: Criando ajuste para investimentos...');
-        const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
+        console.log(`💰 CRIANDO INVESTIMENTO E BANCO para ${registro.pagador}`);
+        
+        // 1. INVESTIMENTO
+        await supabase.from('ajustes_banco').insert([{
           user_id: userId,
           tipo: 'entrada',
           valor: registro.valor,
-          motivo: `${registro.pagador} - Entrada de cliente`
+          motivo: `${registro.pagador} - Investimento`
         }]);
-
-        if (ajusteError) {
-          console.error('❌ ERRO ao criar investimento:', ajusteError);
-          alert(`❌ Erro ao criar investimento: ${ajusteError.message}`);
-          return; // Parar aqui se der erro
-        } else {
-          console.log(`✅ SUCESSO: Investimento criado para entrada ${registro.pagador}: R$ ${registro.valor}`);
-        }
-
-        // 2. Criar entrada adicional no banco (ajuste para caixa da empresa)
-        console.log('📝 Passo 2: Criando entrada no caixa da empresa...');
-        const { error: bancoError } = await supabase.from('ajustes_banco').insert([{
+        
+        // 2. BANCO (caixa da empresa)
+        await supabase.from('ajustes_banco').insert([{
           user_id: userId,
           tipo: 'entrada',
           valor: registro.valor,
-          motivo: `EM - Caixa da empresa (${registro.pagador})`
+          motivo: `EM - Caixa empresa (${registro.pagador})`
         }]);
-
-        if (bancoError) {
-          console.error('❌ ERRO ao criar entrada no banco:', bancoError);
-          alert(`❌ Erro ao criar entrada no banco: ${bancoError.message}`);
-          return; // Parar aqui se der erro
-        } else {
-          console.log(`✅ SUCESSO: Entrada no caixa da empresa criada para ${registro.pagador}: R$ ${registro.valor}`);
-        }
-
-        alert(`✅ Investimento E entrada no banco criados para ${registro.pagador}: R$ ${registro.valor}`);
-      } else {
-        console.log(`ℹ️ Entrada ${registro.pagador} vai apenas para banco (não é PH/DICO)`);
+        
+        alert(`✅ Criado investimento e entrada no banco para ${registro.pagador}`);
       }
     } else if (tipo === 'despesa') {
       // DESPESA: Se fonte = PH/DICO → Investimentos, se EM → Banco
