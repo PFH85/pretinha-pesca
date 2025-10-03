@@ -131,12 +131,16 @@ export default function AReceberPagarPage() {
           console.log(`✅ Investimento criado para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
         }
 
-        // 2. Criar ajuste para Banco (entrada normal)
-        const { error: bancoError } = await supabase.from('ajustes_banco').insert([{
+        // 2. Criar entrada adicional no banco (pagador = EM)
+        const { error: bancoError } = await supabase.from('entradas').insert([{
           user_id: userId,
-          tipo: 'entrada',
           valor: registro.valor,
-          motivo: `${registro.cliente_nome} - Entrada no banco`
+          cliente_nome: registro.cliente_nome,
+          contato: registro.contato || '',
+          previsao: registro.previsao,
+          pago: true,
+          pagador: 'EM',
+          data: registro.data
         }]);
 
         if (bancoError) {
