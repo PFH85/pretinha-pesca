@@ -12,6 +12,7 @@ export default function BancoPage() {
   const [entradas, setEntradas] = useState<Record<string, unknown>[]>([]);
   const [despesas, setDespesas] = useState<Record<string, unknown>[]>([]);
   const [ajustes, setAjustes] = useState<Record<string, unknown>[]>([]);
+  const [entradasPendentes, setEntradasPendentes] = useState<Record<string, unknown>[]>([]);
 
   const carregar = useCallback(async () => {
     setLoading(true);
@@ -38,13 +39,57 @@ export default function BancoPage() {
       .select('*')
       .order('created_at', { ascending: false });
 
+    // Buscar entradas PH/DICO pendentes para criar linha no banco
+    const ep = await supabase
+      .from('entradas')
+      .select('*')
+      .eq('pago', false)
+      .or('pagador.eq.PH,pagador.eq.DICO')
+      .order('data', { ascending: false });
+
     setEntradas(e.data || []);
     setDespesas(d.data || []);
     setAjustes(a.data || []);
+    setEntradasPendentes(ep.data || []);
     setLoading(false);
   }, [supabase]);
 
   useEffect(() => { carregar(); }, [carregar]);
+
+  // Função para criar linha automaticamente no banco
+  async function criarLinhaBanco(entrada: Record<string, unknown>) {
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    
+    if (!userId) {
+      alert('❌ Erro: Usuário não autenticado.');
+      return;
+    }
+
+    const confirmacao = confirm(
+      `💰 Criar linha no banco para entrada ${entrada.cliente_nome}?\n\n` +
+      `Valor: R$ ${Number(entrada.valor).toLocaleString('pt-BR')}\n` +
+      `Pagador: ${entrada.pagador}\n\n` +
+      `Isso criará uma entrada no caixa da empresa.`
+    );
+
+    if (!confirmacao) return;
+
+    // Criar entrada no banco
+    const { error } = await supabase.from('ajustes_banco').insert([{
+      user_id: userId,
+      tipo: 'entrada',
+      valor: entrada.valor,
+      motivo: `EM - Caixa da empresa (${entrada.pagador})`
+    }]);
+
+    if (error) {
+      alert(`❌ Erro ao criar linha no banco: ${error.message}`);
+    } else {
+      alert(`✅ Linha criada no banco com sucesso!`);
+      await carregar(); // Recarregar dados
+    }
+  }
 
   const entradasFiltradas = useMemo(() => entradas.filter((x) => (!de || (x.data as string) >= de) && (!ate || (x.data as string) <= ate)), [entradas, de, ate]);
   const despesasFiltradas = useMemo(() => despesas.filter((x) => (!de || (x.data as string) >= de) && (!ate || (x.data as string) <= ate)), [despesas, de, ate]);
@@ -164,6 +209,40 @@ export default function BancoPage() {
             Pagamentos PH/DICO são contabilizados na aba Investimentos.
           </p>
         </div>
+
+        {/* Entradas PH/DICO Pendentes */}
+        {entradasPendentes.length > 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-yellow-800 mb-3">
+              💰 Entradas PH/DICO Pendentes - Criar Linha no Banco
+            </h2>
+            <div className="space-y-2">
+              {entradasPendentes.map((entrada: Record<string, unknown>) => (
+                <div key={entrada.id as string} className="flex items-center justify-between bg-white p-3 rounded border">
+                  <div className="flex-1">
+                    <span className="font-medium">{entrada.cliente_nome as string}</span>
+                    <span className="text-gray-500 ml-2">({entrada.pagador as string})</span>
+                    <span className="text-green-600 font-bold ml-4">
+                      R$ {Number(entrada.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-gray-400 text-sm ml-2">
+                      - {new Date(entrada.data as string).toLocaleDateString('pt-BR')}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => criarLinhaBanco(entrada)}
+                    className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                  >
+                    📝 Criar Linha no Banco
+                  </button>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-yellow-600 mt-2">
+              💡 Clique em "Criar Linha no Banco" para adicionar automaticamente ao caixa da empresa
+            </p>
+          </div>
+        )}
 
         <div className="flex gap-3 items-end">
           <label className="grid gap-1">
