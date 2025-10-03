@@ -8,7 +8,11 @@ export default function HomePage() {
       <Nav />
       <main className="max-w-5xl mx-auto p-4">
         <div className="text-center space-y-6">
-          <h1 className="text-4xl font-bold text-blue-900 mb-4">🎣 Pretinha Pesca</h1>
+          <h1 className="text-4xl font-bold text-blue-900 mb-4">🎣 Pretinha Pesca v2.0</h1>
+          <div className="bg-green-100 border border-green-300 rounded-lg p-3 mb-4">
+            <p className="text-green-800 font-semibold">✅ Sistema Atualizado - Versão 2.0.0</p>
+            <p className="text-green-700 text-sm">Todas as validações e funcionalidades implementadas</p>
+          </div>
           
           <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-8 border border-blue-200">
             <h2 className="text-2xl font-semibold text-blue-800 mb-4">

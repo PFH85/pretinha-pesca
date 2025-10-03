@@ -1,2 +1,6 @@
-# Force rebuild timestamp
-# BUILD: 2025-10-03T16:54:00Z
+# Force rebuild - No cache
+# Version 2.0.0 - Deploy de Produção
+.cache
+.next
+node_modules
+.env.local
