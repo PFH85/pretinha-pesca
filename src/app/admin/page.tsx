@@ -13,6 +13,7 @@ export default function AdminPage() {
   const [entradas, setEntradas] = useState<Record<string, unknown>[]>([]);
   const [despesas, setDespesas] = useState<Record<string, unknown>[]>([]);
   const [ajustes, setAjustes] = useState<Record<string, unknown>[]>([]);
+  const [calculadoras, setCalculadoras] = useState<Record<string, unknown>[]>([]);
   const [mostrarTodasEntradas, setMostrarTodasEntradas] = useState(false);
   const [mostrarTodasDespesas, setMostrarTodasDespesas] = useState(false);
 
@@ -32,9 +33,11 @@ export default function AdminPage() {
     const e = await supabase.from('entradas').select('*').order('data', { ascending: false });
     const d = await supabase.from('despesas').select('*').order('data', { ascending: false });
     const a = await supabase.from('ajustes_banco').select('*').order('created_at', { ascending: false });
+    const c = await supabase.from('calculadoras_peixes').select('*').order('created_at', { ascending: false });
     setEntradas(e.data || []);
     setDespesas(d.data || []);
     setAjustes(a.data || []);
+    setCalculadoras(c.data || []);
     setLoading(false);
   }, [supabase]);
 
@@ -116,6 +119,104 @@ export default function AdminPage() {
         <main className="max-w-5xl mx-auto p-4">Acesso restrito ao Master.</main>
       </div>
     );
+  }
+
+  // Função para gerar PDF da calculadora
+  function gerarPDF(calc: Record<string, unknown>) {
+    try {
+      // Parse das linhas da calculadora
+      const linhas = JSON.parse((calc.linhas as string) || '[]');
+      const linhasComDados = linhas.filter((l: any) => l.peixe || l.precoKg || l.pesoKg);
+      
+      // Calcular totais
+      const totalPeso = linhasComDados.reduce((acc: number, linha: any) => acc + (Number(linha.pesoKg) || 0), 0);
+      const totalValor = linhasComDados.reduce((acc: number, linha: any) => acc + (Number(linha.precoKg) * Number(linha.pesoKg) || 0), 0);
+
+      const hoje = new Date().toLocaleDateString('pt-BR');
+      
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Calculadora de Peixes - ${calc.nome}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+            .header h1 { color: #1e40af; margin: 0; font-size: 24px; }
+            .info { margin-bottom: 15px; }
+            .info div { margin: 5px 0; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+            th { background-color: #f3f4f6; font-weight: bold; }
+            .total { font-weight: bold; font-size: 16px; }
+            .total td { background-color: #e5e7eb; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>🐟 Pretinha Pesca</h1>
+            <p>Calculadora de Peixes</p>
+          </div>
+          
+          <div class="info">
+            <div><strong>Cliente:</strong> ${(calc.nome as string) || 'Não informado'}</div>
+            <div><strong>Data:</strong> ${hoje}</div>
+            ${calc.data_pagamento ? `<div><strong>Pagamento Para:</strong> ${new Date(calc.data_pagamento as string).toLocaleDateString('pt-BR')}</div>` : ''}
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Peixe</th>
+                <th>Preço/kg</th>
+                <th>Peso Total (kg)</th>
+                <th>Resultado</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${linhasComDados.map((linha: any) => `
+                <tr>
+                  <td>${linha.peixe || ''}</td>
+                  <td>${linha.precoKg ? 'R$ ' + Number(linha.precoKg).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : ''}</td>
+                  <td>${linha.pesoKg ? Number(linha.pesoKg).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : ''}</td>
+                  <td>${linha.precoKg && linha.pesoKg ? 'R$ ' + (Number(linha.precoKg) * Number(linha.pesoKg)).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : ''}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+            <tfoot>
+              <tr class="total">
+                <td colspan="2">TOTAL</td>
+                <td>${totalPeso.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg</td>
+                <td>R$ ${totalValor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+              </tr>
+            </tfoot>
+          </table>
+          
+          <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
+            <p>Documento gerado automaticamente pela Pretinha Pesca</p>
+            <p>Data: ${hoje}</p>
+          </div>
+        </body>
+        </html>
+      `;
+
+      // Abrir janela para impressão
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+        printWindow.focus();
+        
+        // Aguardar um pouco e abrir diálogo de impressão
+        setTimeout(() => {
+          printWindow.print();
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      alert('❌ Erro ao gerar PDF. Verifique os dados da calculadora.');
+    }
   }
 
   return (
@@ -263,6 +364,64 @@ export default function AdminPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </section>
+
+        {/* Seção Calculadoras */}
+        <section className="space-y-2">
+          <h2 className="text-xl font-bold border-b pb-1">📄 Calculadoras de Peixes</h2>
+          <div className="text-sm text-gray-600 mb-3">
+            PDFs das calculadoras salvas por todos os usuários
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="border-collapse border border-gray-400 w-full">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border px-2 py-1">Data</th>
+                  <th className="border px-2 py-1">Cliente</th>
+                  <th className="border px-2 py-1">Total Peso</th>
+                  <th className="border px-2 py-1">Total Valor</th>
+                  <th className="border px-2 py-1">Vencimento</th>
+                  <th className="border px-2 py-1">PDF</th>
+                </tr>
+              </thead>
+              <tbody>
+                {calculadoras.map((calc: Record<string, unknown>) => (
+                  <tr key={calc.id as string}>
+                    <td className="border px-2 py-1 text-xs">
+                      {new Date(calc.created_at as string).toLocaleDateString('pt-BR')}
+                    </td>
+                    <td className="border px-2 py-1 text-xs">
+                      {(calc.nome as string) || 'Sem nome'}
+                    </td>
+                    <td className="border px-2 py-1 text-xs text-right">
+                      {Number(calc.total_peso || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg
+                    </td>
+                    <td className="border px-2 py-1 text-xs text-right">
+                      R$ {Number(calc.total_valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </td>
+                    <td className="border px-2 py-1 text-xs">
+                      {calc.data_pagamento ? new Date(calc.data_pagamento as string).toLocaleDateString('pt-BR') : '-'}
+                    </td>
+                    <td className="border px-2 py-1 text-center">
+                      <button 
+                        className="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700"
+                        onClick={() => gerarPDF(calc)}
+                      >
+                        📄 Gerar PDF
+<｜tool▁calls▁end｜> </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            
+            {calculadoras.length === 0 && (
+              <div className="text-center py-8 text-gray-500 border border-gray-200 rounded-lg">
+                <p>Nenhuma calculadora salva ainda</p>
+              </div>
+            )}
           </div>
         </section>
 
