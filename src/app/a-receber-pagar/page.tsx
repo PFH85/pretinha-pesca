@@ -124,7 +124,7 @@ export default function AReceberPagarPage() {
         registroCompleto: registro
       });
       
-      if ((registro.pagador as string) === 'PH' || (registro.pagador as string) === 'DICO') {
+      if ((registro.pagador as string)?.toUpperCase().trim() === 'PH' || (registro.pagador as string)?.toUpperCase().trim() === 'DICO') {
         console.log(`💰 INICIANDO: Criando investimento E entrada no banco para ${registro.pagador}: R$ ${registro.valor}`);
         
         // 1. Criar ajuste para Investimentos
