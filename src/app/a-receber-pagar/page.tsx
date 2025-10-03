@@ -136,7 +136,7 @@ export default function AReceberPagarPage() {
     } else if (tipo === 'despesa') {
       // DESPESA: Se fonte = PH/DICO → Investimentos, se EM → Banco
       const fontePagadora = (registro.fonte_pagadora as string) || 'EM';
-      console.log('🔍 DEBUG DESPESA:', { fonte_pagadora, item: registro.item, valor: registro.valor });
+      console.log('🔍 DEBUG DESPESA:', { fontePagadora, item: registro.item, valor: registro.valor });
       
       if (fontePagadora === 'PH' || fontePagadora === 'DICO') {
         console.log(`💰 Criando investimento para despesa ${fontePagadora}: R$ ${registro.valor}`);
