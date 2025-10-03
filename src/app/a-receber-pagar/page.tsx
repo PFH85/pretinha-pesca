@@ -143,23 +143,44 @@ export default function AReceberPagarPage() {
         
         console.log(`💰 CRIANDO INVESTIMENTO E BANCO para ${pagadorTrim}`);
         
-        // 1. INVESTIMENTO
-        await supabase.from('ajustes_banco').insert([{
-          user_id: userId,
-          tipo: 'entrada',
-          valor: registro.valor,
-          motivo: `${registro.pagador} - Investimento`
-        }]);
-        
-        // 2. BANCO (caixa da empresa)
-        await supabase.from('ajustes_banco').insert([{
-          user_id: userId,
-          tipo: 'entrada',
-          valor: registro.valor,
-          motivo: `EM - Caixa empresa (${registro.pagador})`
-        }]);
-        
-        alert(`✅ Criado investimento e entrada no banco para ${registro.pagador}`);
+        try {
+          // 1. INVESTIMENTO
+          console.log('📝 Criando investimento...');
+          const { error: investError } = await supabase.from('ajustes_banco').insert([{
+            user_id: userId,
+            tipo: 'entrada',
+            valor: registro.valor,
+            motivo: `${pagadorTrim} - Investimento`
+          }]);
+          
+          if (investError) {
+            console.error('❌ Erro ao criar investimento:', investError);
+            alert(`❌ Erro ao criar investimento: ${investError.message}`);
+            return;
+          }
+          console.log('✅ Investimento criado com sucesso');
+          
+          // 2. BANCO (caixa da empresa)
+          console.log('📝 Criando entrada no banco...');
+          const { error: bancoError } = await supabase.from('ajustes_banco').insert([{
+            user_id: userId,
+            tipo: 'entrada',
+            valor: registro.valor,
+            motivo: `EM - Caixa empresa (${pagadorTrim})`
+          }]);
+          
+          if (bancoError) {
+            console.error('❌ Erro ao criar banco:', bancoError);
+            alert(`❌ Erro ao criar banco: ${bancoError.message}`);
+            return;
+          }
+          console.log('✅ Banco criado com sucesso');
+          
+          alert(`✅ Criado investimento e entrada no banco para ${pagadorTrim}`);
+        } catch (error) {
+          console.error('❌ Erro geral:', error);
+          alert(`❌ Erro: ${error}`);
+        }
       }
     } else if (tipo === 'despesa') {
       // DESPESA: Se fonte = PH/DICO → Investimentos, se EM → Banco
