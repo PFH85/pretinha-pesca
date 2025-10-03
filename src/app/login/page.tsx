@@ -71,7 +71,8 @@ export default function LoginPage() {
           setMessage(`Erro no login: ${error.message}`);
         } else {
           setMessage('✅ Login realizado com sucesso!');
-          router.push('/');
+          // Forçar reload para garantir redirecionamento
+          window.location.href = '/';
         }
       }
     } catch {
