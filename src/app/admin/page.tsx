@@ -127,10 +127,12 @@ export default function AdminPage() {
 
   // Função para obter prefixo do email do usuário
   function getUserEmailPrefix(userId: string): string {
-    // Mapeamento manual dos IDs conhecidos
+    // Mapeamento manual dos IDs conhecidos com prefixos reais dos emails
     const userMap: Record<string, string> = {
-      '6da7dab9-b099-4fb6-9f96-45998cbdc129': 'admin', // admin@pretinha.com
-      // Adicione outros IDs conforme necessário
+      '6da7dab9-b099-4fb6-9f96-45998cbdc129': 'pedro', // emailpedroheringer@gmail.com
+      '5011a438-79c1-4e59-a4a1-70ee726f2117': 'guiar', // guiarodolforibeiro@gmail.com
+      '832aaca6-721b-42ce-8818-e7059f1f7bd2': 'pesso', // pessoa93453@yahoo.com
+      'd142e2ca-8e27-44eb-96bf-dcf3b53ef537': 'carla', // carlacampanuccy@gmail.com
     };
     
     // Se temos o ID mapeado, usa o prefixo
