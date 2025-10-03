@@ -113,7 +113,7 @@ export default function AReceberPagarPage() {
       // ENTRADA: Se cliente = PH ou DICO → Investimentos, senão → continua no próprio sistema
       console.log('🔍 DEBUG ENTRADA:', { cliente_nome: registro.cliente_nome, valor: registro.valor });
       
-      if (registro.cliente_nome === 'PH' || registro.cliente_nome === 'DICO') {
+      if ((registro.cliente_nome as string) === 'PH' || (registro.cliente_nome as string) === 'DICO') {
         console.log(`💰 Criando investimento para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
         
         const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
@@ -135,7 +135,7 @@ export default function AReceberPagarPage() {
       }
     } else if (tipo === 'despesa') {
       // DESPESA: Se fonte = PH/DICO → Investimentos, se EM → Banco
-      const fontePagadora = registro.fonte_pagadora || 'EM';
+      const fontePagadora = (registro.fonte_pagadora as string) || 'EM';
       console.log('🔍 DEBUG DESPESA:', { fonte_pagadora, item: registro.item, valor: registro.valor });
       
       if (fontePagadora === 'PH' || fontePagadora === 'DICO') {
