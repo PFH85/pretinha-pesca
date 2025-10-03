@@ -111,26 +111,36 @@ export default function AReceberPagarPage() {
 
     if (tipo === 'entrada') {
       // ENTRADA: Se cliente = PH ou DICO → Investimentos, senão → continua no próprio sistema
+      console.log('🔍 DEBUG ENTRADA:', { cliente_nome: registro.cliente_nome, valor: registro.valor });
+      
       if (registro.cliente_nome === 'PH' || registro.cliente_nome === 'DICO') {
+        console.log(`💰 Criando investimento para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
+        
         const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
           user_id: userId,
           tipo: 'entrada',
           valor: registro.valor,
-          motivo: `${registro.cliente_nome} - ${registro.cliente_nome || 'Entrada de cliente'}`
+          motivo: `${registro.cliente_nome} - Entrada de cliente`
         }]);
 
         if (ajusteError) {
-          console.error('Erro ao criar ajuste:', ajusteError);
+          console.error('❌ Erro ao criar ajuste:', ajusteError);
+          alert(`❌ Erro ao criar investimento: ${ajusteError.message}`);
         } else {
           console.log(`✅ Investimento criado para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
+          alert(`✅ Investimento criado para ${registro.cliente_nome}: R$ ${registro.valor}`);
         }
+      } else {
+        console.log(`ℹ️ Entrada ${registro.cliente_nome} não é investimento (não é PH/DICO)`);
       }
     } else if (tipo === 'despesa') {
-      // DESPESA: Se fonte = PH/DICO → Investimentos, se EM → Banco (já está funcionando com lógica existente)
+      // DESPESA: Se fonte = PH/DICO → Investimentos, se EM → Banco
       const fontePagadora = registro.fonte_pagadora || 'EM';
+      console.log('🔍 DEBUG DESPESA:', { fonte_pagadora, item: registro.item, valor: registro.valor });
       
       if (fontePagadora === 'PH' || fontePagadora === 'DICO') {
-        // Criar ajuste para Investimentos
+        console.log(`💰 Criando investimento para despesa ${fontePagadora}: R$ ${registro.valor}`);
+        
         const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
           user_id: userId,
           tipo: 'saida',
@@ -139,12 +149,15 @@ export default function AReceberPagarPage() {
         }]);
 
         if (ajusteError) {
-          console.error('Erro ao criar ajuste:', ajusteError);
+          console.error('❌ Erro ao criar ajuste:', ajusteError);
+          alert(`❌ Erro ao criar investimento: ${ajusteError.message}`);
         } else {
           console.log(`✅ Investimento criado para despesa ${fontePagadora}: R$ ${registro.valor}`);
+          alert(`✅ Investimento criado para ${fontePagadora}: R$ ${registro.valor}`);
         }
+      } else {
+        console.log(`ℹ️ Despesa ${fontePagadora} vai para banco (não é PH/DICO)`);
       }
-      // Se fonte_pagadora = EM, não precisa criar ajuste adicional pois vai para banco automaticamente
     }
 
     alert(`✅ ${tipo === 'entrada' ? 'Recebimento' : 'Pagamento'} confirmado e contabilizado!`);
