@@ -138,17 +138,13 @@ export default function AReceberPagarPage() {
           console.log(`✅ SUCESSO: Investimento criado para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
         }
 
-        // 2. Criar entrada adicional no banco (pagador = EM)
-        console.log('📝 Passo 2: Criando entrada adicional no banco...');
-        const { error: bancoError } = await supabase.from('entradas').insert([{
+        // 2. Criar entrada adicional no banco (ajuste para caixa da empresa)
+        console.log('📝 Passo 2: Criando entrada no caixa da empresa...');
+        const { error: bancoError } = await supabase.from('ajustes_banco').insert([{
           user_id: userId,
+          tipo: 'entrada',
           valor: registro.valor,
-          cliente_nome: registro.cliente_nome,
-          contato: registro.contato || '',
-          previsao: registro.previsao,
-          pago: true,
-          pagador: 'EM',
-          data: registro.data
+          motivo: `EM - Caixa da empresa (${registro.cliente_nome})`
         }]);
 
         if (bancoError) {
@@ -156,7 +152,7 @@ export default function AReceberPagarPage() {
           alert(`❌ Erro ao criar entrada no banco: ${bancoError.message}`);
           return; // Parar aqui se der erro
         } else {
-          console.log(`✅ SUCESSO: Entrada no banco criada para ${registro.cliente_nome}: R$ ${registro.valor}`);
+          console.log(`✅ SUCESSO: Entrada no caixa da empresa criada para ${registro.cliente_nome}: R$ ${registro.valor}`);
         }
 
         alert(`✅ Investimento E entrada no banco criados para ${registro.cliente_nome}: R$ ${registro.valor}`);
