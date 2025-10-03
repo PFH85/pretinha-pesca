@@ -111,12 +111,18 @@ export default function AReceberPagarPage() {
 
     if (tipo === 'entrada') {
       // ENTRADA: Se cliente = PH ou DICO → Investimentos, senão → continua no próprio sistema
-      console.log('🔍 DEBUG ENTRADA:', { cliente_nome: registro.cliente_nome, valor: registro.valor });
+      console.log('🔍 DEBUG ENTRADA COMPLETO:', { 
+        cliente_nome: registro.cliente_nome, 
+        valor: registro.valor,
+        userId: userId,
+        registroCompleto: registro
+      });
       
       if ((registro.cliente_nome as string) === 'PH' || (registro.cliente_nome as string) === 'DICO') {
-        console.log(`💰 Criando investimento E entrada no banco para ${registro.cliente_nome}: R$ ${registro.valor}`);
+        console.log(`💰 INICIANDO: Criando investimento E entrada no banco para ${registro.cliente_nome}: R$ ${registro.valor}`);
         
         // 1. Criar ajuste para Investimentos
+        console.log('📝 Passo 1: Criando ajuste para investimentos...');
         const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
           user_id: userId,
           tipo: 'entrada',
@@ -125,13 +131,15 @@ export default function AReceberPagarPage() {
         }]);
 
         if (ajusteError) {
-          console.error('❌ Erro ao criar investimento:', ajusteError);
+          console.error('❌ ERRO ao criar investimento:', ajusteError);
           alert(`❌ Erro ao criar investimento: ${ajusteError.message}`);
+          return; // Parar aqui se der erro
         } else {
-          console.log(`✅ Investimento criado para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
+          console.log(`✅ SUCESSO: Investimento criado para entrada ${registro.cliente_nome}: R$ ${registro.valor}`);
         }
 
         // 2. Criar entrada adicional no banco (pagador = EM)
+        console.log('📝 Passo 2: Criando entrada adicional no banco...');
         const { error: bancoError } = await supabase.from('entradas').insert([{
           user_id: userId,
           valor: registro.valor,
@@ -144,10 +152,11 @@ export default function AReceberPagarPage() {
         }]);
 
         if (bancoError) {
-          console.error('❌ Erro ao criar entrada no banco:', bancoError);
+          console.error('❌ ERRO ao criar entrada no banco:', bancoError);
           alert(`❌ Erro ao criar entrada no banco: ${bancoError.message}`);
+          return; // Parar aqui se der erro
         } else {
-          console.log(`✅ Entrada no banco criada para ${registro.cliente_nome}: R$ ${registro.valor}`);
+          console.log(`✅ SUCESSO: Entrada no banco criada para ${registro.cliente_nome}: R$ ${registro.valor}`);
         }
 
         alert(`✅ Investimento E entrada no banco criados para ${registro.cliente_nome}: R$ ${registro.valor}`);
