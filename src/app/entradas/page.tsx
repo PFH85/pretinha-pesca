@@ -75,7 +75,7 @@ export default function EntradasPage() {
         data: hoje,
         previsao: previsao || null,
         pago,
-        pagador: pago ? pagador : null,
+        pagador: pagador || null,
         cliente_nome: cliente || null,
         contato: contato || null,
       },
