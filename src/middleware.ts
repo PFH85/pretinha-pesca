@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export async function middleware(req: NextRequest) {
+export async function middleware(_req: NextRequest) {
   // Temporariamente desabilitado para debug
   // FORCE REBUILD: ${new Date().toISOString()}
   return NextResponse.next()

@@ -58,7 +58,7 @@ export default function AReceberPagarPage() {
   async function marcarComoPago(tipo: 'entrada' | 'despesa', id: string, dataRegistro: string, dataPagamento?: string) {
     console.log('🚀 INÍCIO DA FUNÇÃO:', { tipo, id, dataRegistro, dataPagamento });
     
-    const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    // const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     
     // 🔒 VALIDAÇÃO TEMPORARIAMENTE DESABILITADA PARA TESTE
     // if (dataRegistro !== hoje && dataPagamento !== hoje) {

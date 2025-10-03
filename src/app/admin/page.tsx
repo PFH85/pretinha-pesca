@@ -14,7 +14,6 @@ export default function AdminPage() {
   const [despesas, setDespesas] = useState<Record<string, unknown>[]>([]);
   const [ajustes, setAjustes] = useState<Record<string, unknown>[]>([]);
   const [calculadoras, setCalculadoras] = useState<Record<string, unknown>[]>([]);
-  const [usuarios, setUsuarios] = useState<Record<string, unknown>[]>([]);
   const [mostrarTodasEntradas, setMostrarTodasEntradas] = useState(false);
   const [mostrarTodasDespesas, setMostrarTodasDespesas] = useState(false);
 
@@ -184,11 +183,11 @@ export default function AdminPage() {
     try {
       // Parse das linhas da calculadora
       const linhas = JSON.parse((calc.linhas as string) || '[]');
-      const linhasComDados = linhas.filter((l: any) => l.peixe || l.precoKg || l.pesoKg);
+      const linhasComDados = linhas.filter((l: Record<string, unknown>) => l.peixe || l.precoKg || l.pesoKg);
       
       // Calcular totais
-      const totalPeso = linhasComDados.reduce((acc: number, linha: any) => acc + (Number(linha.pesoKg) || 0), 0);
-      const totalValor = linhasComDados.reduce((acc: number, linha: any) => acc + (Number(linha.precoKg) * Number(linha.pesoKg) || 0), 0);
+      const totalPeso = linhasComDados.reduce((acc: number, linha: Record<string, unknown>) => acc + (Number(linha.pesoKg) || 0), 0);
+      const totalValor = linhasComDados.reduce((acc: number, linha: Record<string, unknown>) => acc + (Number(linha.precoKg) * Number(linha.pesoKg) || 0), 0);
 
       const hoje = new Date().toLocaleDateString('pt-BR');
       
@@ -233,7 +232,7 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              ${linhasComDados.map((linha: any) => `
+              ${linhasComDados.map((linha: Record<string, unknown>) => `
                 <tr>
                   <td>${linha.peixe || ''}</td>
                   <td>${linha.precoKg ? 'R$ ' + Number(linha.precoKg).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : ''}</td>

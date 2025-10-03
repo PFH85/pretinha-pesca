@@ -251,7 +251,7 @@ export default function BancoPage() {
               ))}
             </div>
             <p className="text-xs text-yellow-600 mt-2">
-              💡 Clique em "Criar Linha no Banco" para adicionar automaticamente ao caixa da empresa
+              💡 Clique em &quot;Criar Linha no Banco&quot; para adicionar automaticamente ao caixa da empresa
             </p>
           </div>
         )}

@@ -5,7 +5,7 @@ import { getSupabaseClient } from '@/lib/supabaseClient';
 
 export default function LoginPage() {
   const supabase = getSupabaseClient();
-  const router = useRouter();
+  // const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
