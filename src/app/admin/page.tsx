@@ -121,6 +121,20 @@ export default function AdminPage() {
     );
   }
 
+  // Função para obter prefixo do email do usuário
+  function getUserEmailPrefix(userId: string): string {
+    // Por enquanto retorna as primeiras 5 letras do ID
+    // Em uma versão futura, podemos buscar o email real do usuário
+    return userId.substring(0, 5).toUpperCase();
+  }
+
+  // Função para gerar nome único do arquivo PDF
+  function generatePDFFileName(clienteNome: string): string {
+    const nomeBase = `Orçamento_${clienteNome || 'Cliente'}`;
+    const hoje = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+    return `${nomeBase}_${hoje}`;
+  }
+
   // Função para gerar PDF da calculadora
   function gerarPDF(calc: Record<string, unknown>) {
     try {
@@ -139,7 +153,7 @@ export default function AdminPage() {
         <html>
         <head>
           <meta charset="UTF-8">
-          <title>Calculadora de Peixes - ${calc.nome}</title>
+          <title>${generatePDFFileName(calc.nome as string)}</title>
           <style>
             body { font-family: Arial, sans-serif; margin: 20px; }
             .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
@@ -156,7 +170,7 @@ export default function AdminPage() {
         <body>
           <div class="header">
             <h1>🐟 Pretinha Pesca</h1>
-            <p>Calculadora de Peixes</p>
+            <p>${generatePDFFileName(calc.nome as string)}</p>
           </div>
           
           <div class="info">
@@ -383,6 +397,7 @@ export default function AdminPage() {
                   <th className="border px-2 py-1">Total Peso</th>
                   <th className="border px-2 py-1">Total Valor</th>
                   <th className="border px-2 py-1">Vencimento</th>
+                  <th className="border px-2 py-1">Usuário</th>
                   <th className="border px-2 py-1">PDF</th>
                 </tr>
               </thead>
@@ -403,6 +418,9 @@ export default function AdminPage() {
                     </td>
                     <td className="border px-2 py-1 text-xs">
                       {calc.data_pagamento ? new Date(calc.data_pagamento as string).toLocaleDateString('pt-BR') : '-'}
+                    </td>
+                    <td className="border px-2 py-1 text-xs text-center">
+                      {getUserEmailPrefix(calc.user_id as string)}
                     </td>
                     <td className="border px-2 py-1 text-center">
                       <button 
