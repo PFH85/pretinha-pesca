@@ -13,20 +13,23 @@ export default function AReceberPagarPage() {
 
   const carregar = useCallback(async () => {
     setLoading(true);
+    const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
-    // Buscar entradas NÃO pagas
+    // Buscar entradas NÃO pagas (A Receber)
     const e = await supabase
       .from('entradas')
       .select('*')
       .eq('pago', false)
       .order('data', { ascending: true });
 
-    // Buscar despesas NÃO pagas
+    // Buscar despesas NÃO pagas com vencimento FUTURO (A Pagar)
+    // Só aparecem despesas que têm data_pagamento no futuro ou hoje
     const d = await supabase
       .from('despesas')
       .select('*')
       .eq('pago', false)
-      .order('data_pagamento', { ascending: true, nullsFirst: false });
+      .gte('data_pagamento', hoje) // Só vencimentos futuros ou hoje
+      .order('data_pagamento', { ascending: true });
 
     setEntradas(e.data || []);
     setDespesas(d.data || []);
@@ -51,10 +54,41 @@ export default function AReceberPagarPage() {
   const totalAPagar = despesasFiltradas.reduce((acc, i) => acc + Number(i.valor || 0), 0);
   const saldoLiquido = totalAReceber - totalAPagar;
 
-  // Função para marcar como pago
-  async function marcarComoPago(tipo: 'entrada' | 'despesa', id: string) {
+  // Função para marcar como pago com validação de data
+  async function marcarComoPago(tipo: 'entrada' | 'despesa', id: string, dataRegistro: string, dataPagamento?: string) {
+    const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    
+    // 🔒 VALIDAÇÃO: Só permitir marcar pago se corresponder ao dia atual
+    if (dataRegistro !== hoje && dataPagamento !== hoje) {
+      alert('⚠️ Só é possível marcar como pago itens registrados ou com vencimento no dia atual!');
+      return;
+    }
+
+    // Buscar valor para confirmação
+    const { data: registroTemp } = await supabase
+      .from(tabela)
+      .select('valor')
+      .eq('id', id)
+      .single();
+
+    const valor = Number(registroTemp?.valor || 0);
+    
+    // Confirmar ação crítica
+    const confirmacao = tipo === 'entrada' 
+      ? `Confirmar recebimento de R$ ${valor.toLocaleString('pt-BR')}?`
+      : `Confirmar pagamento de R$ ${valor.toLocaleString('pt-BR')}?`;
+    
+    if (!confirm(confirmacao)) return;
+
     const tabela = tipo === 'entrada' ? 'entradas' : 'despesas';
     
+    // Primeiro buscar os dados completos para determinar destino
+    const { data: registro } = await supabase
+      .from(tabela)
+      .select('*')
+      .eq('id', id)
+      .single();
+
     const { error } = await supabase
       .from(tabela)
       .update({ pago: true })
@@ -65,6 +99,42 @@ export default function AReceberPagarPage() {
       return;
     }
 
+    // 🔄 FLUXO CORRETO: Determinar destino conforme fonte pagadora
+    if (tipo === 'entrada') {
+      // ENTRADA: Se cliente = PH ou DICO → Investimentos, senão → continua no próprio sistema
+      if (registro.cliente_nome === 'PH' || registro.cliente_nome === 'DICO') {
+        const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
+          user_id: registro.user_id,
+          tipo: 'entrada',
+          valor: registro.valor,
+          motivo: `${registro.cliente_nome} - ${registro.cliente_nome || 'Entrada de cliente'}`
+        }]);
+
+        if (ajusteError) {
+          console.error('Erro ao criar ajuste:', ajusteError);
+        }
+      }
+    } else if (tipo === 'despesa') {
+      // DESPESA: Se fonte = PH/DICO → Investimentos, se EM → Banco (já está funcionando com lógica existente)
+      const fontePagadora = registro.fonte_pagadora || 'EM';
+      
+      if (fontePagadora === 'PH' || fontePagadora === 'DICO') {
+        // Criar ajuste para Investimentos
+        const { error: ajusteError } = await supabase.from('ajustes_banco').insert([{
+          user_id: registro.user_id,
+          tipo: 'saida',
+          valor: registro.valor,
+          motivo: `${fontePagadora} - ${registro.item}`
+        }]);
+
+        if (ajusteError) {
+          console.error('Erro ao criar ajuste:', ajusteError);
+        }
+      }
+      // Se fonte_pagadora = EM, não precisa criar ajuste adicional pois vai para banco automaticamente
+    }
+
+    alert(`✅ ${tipo === 'entrada' ? 'Recebimento' : 'Pagamento'} confirmado e contabilizado!`);
     await carregar(); // Recarregar dados
   }
 
@@ -176,7 +246,7 @@ export default function AReceberPagarPage() {
                       </td>
                       <td className="border-b px-3 py-2 text-center">
                         <button
-                          onClick={() => marcarComoPago('entrada', entrada.id as string)}
+                          onClick={() => marcarComoPago('entrada', entrada.id as string, entrada.data as string)}
                           className="bg-green-600 text-white rounded px-2 py-1 text-xs hover:bg-green-700"
                         >
                           Recebido
@@ -244,7 +314,7 @@ export default function AReceberPagarPage() {
                       </td>
                       <td className="border-b px-3 py-2 text-center">
                         <button
-                          onClick={() => marcarComoPago('despesa', despesa.id as string)}
+                          onClick={() => marcarComoPago('despesa', despesa.id as string, despesa.data as string, despesa.data_pagamento as string)}
                           className="bg-red-600 text-white rounded px-2 py-1 text-xs hover:bg-red-700"
                         >
                           Pago
