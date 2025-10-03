@@ -82,6 +82,15 @@ export default function DespesasPage() {
       setStatus('⚠️ Selecione a fonte pagadora quando marcar como pago.');
       return;
     }
+
+    // 🔒 VALIDAÇÃO CRÍTICA: Só pode marcar "Pago" se data de hoje = data para pagamento
+    if (pago && dataPagamento) {
+      const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      if (dataPagamento !== hoje) {
+        setStatus('⚠️ Só é possível marcar como "Pago" se a data para pagamento for hoje!');
+        return;
+      }
+    }
     
     const { data: userData } = await supabase.auth.getUser();
     const userId = userData.user?.id;
