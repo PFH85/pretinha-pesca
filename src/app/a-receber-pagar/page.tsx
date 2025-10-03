@@ -160,6 +160,9 @@ export default function AReceberPagarPage() {
           }
           console.log('✅ Investimento criado com sucesso');
           
+          // Pequeno delay para evitar conflitos
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
           // 2. BANCO (caixa da empresa)
           console.log('📝 Criando entrada no banco...');
           const { error: bancoError } = await supabase.from('ajustes_banco').insert([{

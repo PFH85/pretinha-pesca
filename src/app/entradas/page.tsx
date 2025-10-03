@@ -86,24 +86,8 @@ export default function EntradasPage() {
       return;
     }
 
-    // Se cliente for PH ou DICO e estiver PAGO, adicionar como investimento
-    const clienteUpper = cliente?.toUpperCase();
-    if (pago && (clienteUpper === 'PH' || clienteUpper === 'DICO')) {
-      const { error: ajusteError } = await supabase.from('ajustes_banco').insert([
-        {
-          user_id: userId,
-          tipo: 'entrada',
-          valor: typeof valor === 'string' && valor === '' ? 0 : Number(valor),
-          motivo: `Entrada ${clienteUpper} - ${cliente} (automático)`,
-        },
-      ]);
-      
-      if (ajusteError) {
-        console.warn('Erro ao criar ajuste para investimento:', ajusteError.message);
-      } else {
-        console.log(`✅ Investimento criado para ${clienteUpper}: R$ ${valor}`);
-      }
-    }
+    // Investimentos são criados automaticamente na aba "A Receber/A Pagar"
+    // quando o pagador for PH/DICO
     
     setStatus('Salvo com sucesso.');
     setValor('');
