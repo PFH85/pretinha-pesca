@@ -16,7 +16,7 @@ export default function HomePage() {
             </h2>
             
             <p className="text-lg text-gray-700 leading-relaxed mb-6">
-              Como as águas do oceano que se renovam a cada maré, nossa empresa cresce com 
+              🚀 TESTE DE DEPLOYMENT FUNCIONANDO! Como as águas do oceano que se renovam a cada maré, nossa empresa cresce com 
               <strong> coragem, disciplina e planejamento</strong>. Cada pescaria é uma nova oportunidade, 
               cada investimento uma âncora para o futuro, e cada decisão um rumo traçado com sabedoria.
             </p>
