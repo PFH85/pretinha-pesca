@@ -44,7 +44,7 @@ export default function AdminPage() {
     setDespesas(d.data || []);
     setAjustes(a.data || []);
     setCalculadoras(c.data || []);
-    setUsuarios(u.data || []);
+    // setUsuarios(u.data || []); // Removido - não utilizado
     setLoading(false);
   }, [supabase]);
 
